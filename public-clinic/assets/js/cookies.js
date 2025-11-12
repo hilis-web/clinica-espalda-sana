@@ -25,7 +25,7 @@ $(document).ready(function () {
 
     if (acceptBtn) {
       acceptBtn.addEventListener("click", function () {
-        alert("test acceptCookies");
+        // alert("test acceptCookies");
         localStorage.setItem("cookiesAccepted", "true");
         banner.style.display = "none";
         acceptBtn1.style.display = "none";

@@ -1,41 +1,64 @@
 <!-- Floating Consultation Form -->
 <div id="floating-consultation-form">
-    <div id="toggle-form" class="form-header">
-        <h5 class="my-0" data-i18n="consultation_request">Consultation Request</h5>
-        <button id="">−</button>
-    </div>
-    <div id="form-body">
-        <form id="consultationForm">
+  <div id="toggle-form" class="form-header">
+    <h5 class="my-0" data-i18n="consultation_request">Consultation Request</h5>
+    <button id="">−</button>
+  </div>
+  <div id="form-body">
+    <form id="consultationForm">
+      <!-- Row 1: Full Name + Email -->
+      <div class="mb-3 row">
+        <div class="col-md-4">
+          <label for="fullName" class="form-label" data-i18n="full_name_label"
+            >Full Name</label
+          >
+          <input
+            type="text"
+            id="consultationfullName"
+            name="fullName"
+            class="form-control"
+            placeholder="Enter your name"
+            required
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="email" class="form-label" data-i18n="email_label"
+            >Email</label
+          >
+          <input
+            type="email"
+            id="consultationemail"
+            name="email"
+            class="form-control"
+            placeholder="example@example.com"
+            required
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="phone" class="form-label" data-i18n="phone_label"
+            >Phone Number</label
+          >
+          <input
+            type="text"
+            id="consultationphone"
+            name="phone"
+            class="form-control"
+            placeholder="Enter your phone number"
+            required
+          />
+        </div>
+      </div>
 
-            <!-- Row 1: Full Name + Email -->
-            <div class="mb-3 row">
-                <div class="col-md-4">
-                    <label for="fullName" class="form-label" data-i18n="full_name_label">Full Name</label>
-                    <input type="text" id="consultationfullName" name="fullName" class="form-control"
-                        placeholder="Enter your name" required>
-                </div>
-                <div class="col-md-4">
-                    <label for="email" class="form-label" data-i18n="email_label">Email</label>
-                    <input type="email" id="consultationemail" name="email" class="form-control"
-                        placeholder="example@example.com" required>
-                </div>
-                <div class="col-md-4">
-                    <label for="phone" class="form-label" data-i18n="phone_label">Phone Number</label>
-                    <input type="text" id="consultationphone" name="phone" class="form-control"
-                        placeholder="Enter your phone number" required>
-                </div>
-            </div>
-
-            <!-- Row 2: Phone Number -->
-            <!-- <div class="mb-3 row"> -->
-                <!-- <div class="col-md-6">
+      <!-- Row 2: Phone Number -->
+      <!-- <div class="mb-3 row"> -->
+      <!-- <div class="col-md-6">
                     <label for="phone" class="form-label" data-i18n="phone_label">Phone Number</label>
                     <input type="text" id="consultationphone" name="phone" class="form-control"
                         placeholder="Enter your phone number" required>
                 </div> -->
 
-                <!-- لو حبيت تفعل اختيار طريقة الاتصال مستقبلاً -->
-                <!--
+      <!-- لو حبيت تفعل اختيار طريقة الاتصال مستقبلاً -->
+      <!--
                 <div class="col-md-6">
                     <label for="contactMethod" class="form-label" data-i18n="contact_method_label">Contact Method</label>
                     <select id="consultationcontactMethod" name="contactMethod" class="form-select" required>
@@ -45,38 +68,58 @@
                     </select>
                 </div>
                 -->
-            <!-- </div> -->
+      <!-- </div> -->
 
-            <!-- Additional Information -->
-            <div class="mb-3">
-                <label for="additionalInfo" class="form-label" data-i18n="additional_info_label">Additional
-                    Information</label>
-                <textarea id="consultationadditionalInfo" name="additionalInfo" class="form-control" rows="3"
-                    placeholder="Enter any additional information"></textarea>
-            </div>
+      <!-- Additional Information -->
+      <div class="mb-3">
+        <label
+          for="additionalInfo"
+          class="form-label"
+          data-i18n="additional_info_label"
+          >Additional Information</label
+        >
+        <textarea
+          id="consultationadditionalInfo"
+          name="additionalInfo"
+          class="form-control"
+          rows="3"
+          placeholder="Enter any additional information"
+        ></textarea>
+      </div>
 
-            <!-- Submit Button -->
-            <button type="submit" class="btn btn-primary w-100" data-i18n="submit_request">Submit Request</button>
-        </form>
-    </div>
+      <!-- reCAPTCHA widget -->
+      <div
+        class="g-recaptcha"
+        data-sitekey="6LfWLgosAAAAADXiUc43PJerAAHzoYNeek1DdtCl"
+      ></div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="btn btn-primary w-100"
+        data-i18n="submit_request"
+      >
+        Submit Request
+      </button>
+    </form>
+  </div>
 </div>
 
-
 <script>
+  $(document).ready(function () {
+    $("#toggle-form").click(function () {
+      $("#floating-consultation-form").toggleClass("minimized");
 
-$(document).ready(function(){
-    $("#toggle-form").click(function(){
-        $("#floating-consultation-form").toggleClass("minimized");
+      // تغيير نص الزر
+      // $(this).text($("#floating-consultation-form").hasClass("minimized") ? "+" : "−");
 
-        // تغيير نص الزر
-        // $(this).text($("#floating-consultation-form").hasClass("minimized") ? "+" : "−");
-
-        // ضبط العرض عندما يكون مصغر
-        if($("#floating-consultation-form").hasClass("minimized")){
-            $("#floating-consultation-form").css("width", "240px");
-        } else {
-            $("#floating-consultation-form").css("width", ""); // يرجع للعرض الأصلي
-        }
+      // ضبط العرض عندما يكون مصغر
+      if ($("#floating-consultation-form").hasClass("minimized")) {
+        $("#floating-consultation-form").css("width", "240px");
+      } else {
+        $("#floating-consultation-form").css("width", ""); // يرجع للعرض الأصلي
+      }
     });
-});
+  });
 </script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
