@@ -484,6 +484,18 @@ app.post("/addUser", async (req, res) => {
         pass: process.env.GMAIL_APP_PASS, // App password من Google
       },
     });
+
+    try {
+      await transporter.verify();
+      console.log("✅ Server is ready to send emails");
+    } catch (err) {
+      console.error("❌ Email server verification failed:", err.message);
+      return res.status(500).json({
+        error: "Email server verification failed",
+        details: err.message,
+      });
+    }
+
     // 3. إعداد الإيميل
     const mailOptions = {
       from: `"${fullName}" <${process.env.GMAIL_USER}>`, // مهم يكون نفس الحساب
@@ -509,7 +521,10 @@ app.post("/addUser", async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Error adding user or sending email:", error);
-    res.status(500).json({ error: "An error occurred while adding the user" });
+    res.status(500).json({
+      error: "An error occurred while adding the user",
+      details: error.message,
+    });
   }
 });
 
