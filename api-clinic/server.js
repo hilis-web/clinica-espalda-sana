@@ -347,6 +347,87 @@ const nodemailer = require("nodemailer");
 const fetch = require("node-fetch"); // تأكد إنه موجود
 
 // Request Consultation
+// app.post("/addUser", async (req, res) => {
+//   console.log("req.body", req.body);
+//   const { fullName, email, phone, additionalInfo } = req.body;
+
+//   if (!fullName || !email) {
+//     return res
+//       .status(400)
+//       .json({ error: "Please provide all required fields." });
+//   }
+
+//   try {
+//     // 1. حفظ البيانات في الداتابيس
+//     const user = new User({
+//       fullName,
+//       email,
+//       phone,
+//       additionalInfo: additionalInfo || "",
+//       createdAt: new Date(),
+//     });
+
+//     // await user.save();
+//     const savedUser = await user.save();
+//     console.log("User saved:", savedUser);
+//     console.log("User ID:", savedUser._id);
+//     // // 2. إعداد transporter مع Outlook
+//     // const transporter = nodemailer.createTransport({
+//     //   host: "smtp.office365.com",
+//     //   port: 587,
+//     //   secure: false, // لازم false مع port 587
+//     //   auth: {
+//     //     user: process.env.OUTLOOK_USER,
+//     //     pass: process.env.OUTLOOK_PASS,
+//     //   },
+//     //   logger: true, // يطبع logs للـ console
+//     //   debug: true, // يطبع تفاصيل SMTP
+//     //   tls: {
+//     //     ciphers: "SSLv3",
+//     //     rejectUnauthorized: false, // جربي تشيليها لو السيرفر production
+//     //   },
+//     // });
+//     // 2. إعداد transporter مع Gmail
+//     const transporter = nodemailer.createTransport({
+//       service: "gmail",
+//       auth: {
+//         user: process.env.GMAIL_USER, // إيميلك في Gmail
+//         pass: process.env.GMAIL_APP_PASS, // App password من Google
+//       },
+//     });
+//     // 3. إعداد الإيميل
+//     const mailOptions = {
+//       from: `"${fullName}" <${process.env.GMAIL_USER}>`, // مهم يكون نفس الحساب
+//       replyTo: email, // الرد يروح لإيميل اليوزر
+//       to: process.env.GMAIL_USER, // إيميلك الرسمي (المستلم)
+//       subject: "🔔 استشارة جديدة من الموقع",
+//       html: `
+//         <h3>تفاصيل الطلب:</h3>
+//         <p><b>الاسم:</b> ${fullName}</p>
+//         <p><b>الإيميل:</b> ${email}</p>
+//         <p><b>الهاتف:</b> ${phone || "-"}</p>
+//         <p><b>معلومات إضافية:</b> ${additionalInfo || "-"}</p>
+//         <p><i>تم الإرسال بتاريخ: ${new Date().toLocaleString()}</i></p>
+//       `,
+//     };
+
+//     // 4. إرسال الإيميل
+//     await transporter.sendMail(mailOptions);
+
+//     res.status(200).json({
+//       message: "User added successfully and email sent!" + savedUser,
+//       userId: user._id,
+//     });
+//   } catch (error) {
+//     console.error("❌ Error adding user or sending email:", error);
+//     res.status(500).json({
+//       error: "An error occurred while adding the user",
+//       details: error.message, // 👈 أضف هذا مؤقتاً لمشاهدة السبب الحقيقي
+//     });
+//   }
+// });
+
+// Request Consultation **WITH RECAPTCHA**
 app.post("/addUser", async (req, res) => {
   console.log("req.body", req.body);
   const {
@@ -395,28 +476,19 @@ app.post("/addUser", async (req, res) => {
 
     await user.save();
 
-    // 4️⃣ إعداد transporter مع Outlook
+    // 2. إعداد transporter مع Gmail
     const transporter = nodemailer.createTransport({
-      host: "smtp.office365.com",
-      port: 587,
-      secure: false,
+      service: "gmail",
       auth: {
-        user: process.env.OUTLOOK_USER,
-        pass: process.env.OUTLOOK_PASS,
-      },
-      logger: true,
-      debug: true,
-      tls: {
-        ciphers: "SSLv3",
-        rejectUnauthorized: false,
+        user: process.env.GMAIL_USER, // إيميلك في Gmail
+        pass: process.env.GMAIL_APP_PASS, // App password من Google
       },
     });
-
-    // 5️⃣ إعداد الإيميل
+    // 3. إعداد الإيميل
     const mailOptions = {
-      from: `"${fullName}" <${process.env.OUTLOOK_USER}>`,
-      replyTo: email,
-      to: process.env.OUTLOOK_USER,
+      from: `"${fullName}" <${process.env.GMAIL_USER}>`, // مهم يكون نفس الحساب
+      replyTo: email, // الرد يروح لإيميل اليوزر
+      to: process.env.GMAIL_USER, // إيميلك الرسمي (المستلم)
       subject: "🔔 استشارة جديدة من الموقع",
       html: `
         <h3>تفاصيل الطلب:</h3>
