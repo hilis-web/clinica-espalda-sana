@@ -592,10 +592,18 @@ app.post("/addUser", async (req, res) => {
     `;
 
     // 6️⃣ إرسال البريد عبر Resend
+    // await resend.emails.send({
+    //   from: process.env.SENDER_EMAIL, // بريد موثق عند Resend
+    //   to: process.env.MY_GMAIL, // بريدك لتستقبل الاستشارات
+    //   reply_to: email, // الرد يذهب للمستخدم مباشرة
+    //   subject: "🩺 استشارة جديدة من الموقع",
+    //   html: htmlContent,
+    // });
+
     await resend.emails.send({
-      from: process.env.SENDER_EMAIL, // بريد موثق عند Resend
-      to: process.env.MY_GMAIL, // بريدك لتستقبل الاستشارات
-      reply_to: email, // الرد يذهب للمستخدم مباشرة
+      from: "no-reply@resend.com", // البريد الافتراضي من Resend
+      to: process.env.MY_GMAIL,
+      reply_to: email, // يذهب الرد مباشرة للمستخدم
       subject: "🩺 استشارة جديدة من الموقع",
       html: htmlContent,
     });
