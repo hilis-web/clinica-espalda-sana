@@ -478,23 +478,25 @@ app.post("/addUser", async (req, res) => {
 
     // 2. إعداد transporter مع Gmail
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false, // TLS
       auth: {
-        user: process.env.GMAIL_USER, // إيميلك في Gmail
-        pass: process.env.GMAIL_APP_PASS, // App password من Google
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASS,
       },
     });
 
-    try {
-      await transporter.verify();
-      console.log("✅ Server is ready to send emails");
-    } catch (err) {
-      console.error("❌ Email server verification failed:", err.message);
-      return res.status(500).json({
-        error: "Email server verification failed",
-        details: err.message,
-      });
-    }
+    // try {
+    //   await transporter.verify();
+    //   console.log("✅ Server is ready to send emails");
+    // } catch (err) {
+    //   console.error("❌ Email server verification failed:", err.message);
+    //   return res.status(500).json({
+    //     error: "Email server verification failed",
+    //     details: err.message,
+    //   });
+    // }
 
     // 3. إعداد الإيميل
     const mailOptions = {
@@ -514,7 +516,6 @@ app.post("/addUser", async (req, res) => {
 
     // 6️⃣ إرسال الإيميل
     await transporter.sendMail(mailOptions);
-
     res.status(200).json({
       message: "User added successfully and email sent!",
       userId: user._id,
