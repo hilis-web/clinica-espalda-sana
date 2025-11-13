@@ -430,7 +430,6 @@ const fetch = require("node-fetch"); // تأكد إنه موجود
 // Request Consultation **WITH RECAPTCHA**
 app.post("/addUser", async (req, res) => {
   console.log("req.body", req.body);
-
   const {
     fullName,
     email,
@@ -454,20 +453,10 @@ app.post("/addUser", async (req, res) => {
   }
 
   try {
-    // التحقق من reCAPTCHA بطريقة POST
-    const secretKey = process.env.RECAPTCHA_SECRET_KEY;
-    const formData = new URLSearchParams();
-    formData.append("secret", secretKey);
-    formData.append("response", recaptchaResponse);
+    const secretKey = process.env.RECAPTCHA_SECRET_KEY; // المفتاح السري
+    const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${recaptchaResponse}`;
 
-    const recaptchaRes = await fetch(
-      "https://www.google.com/recaptcha/api/siteverify",
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
-
+    const recaptchaRes = await fetch(verifyUrl, { method: "POST" });
     const recaptchaData = await recaptchaRes.json();
 
     if (!recaptchaData.success) {
@@ -485,25 +474,33 @@ app.post("/addUser", async (req, res) => {
       createdAt: new Date(),
     });
 
-    const savedUser = await user.save();
-    console.log("User saved:", savedUser._id);
+    await user.save();
 
-    // 4️⃣ إعداد Nodemailer مع Gmail
+    // 2. إعداد transporter مع Gmail
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP_PASS, // يجب أن يكون App Password صحيح
+        user: process.env.GMAIL_USER, // إيميلك في Gmail
+        pass: process.env.GMAIL_APP_PASS, // App password من Google
       },
-      tls: { rejectUnauthorized: false },
-      connectionTimeout: 10000, // 10 ثواني
     });
 
-    // 5️⃣ إعداد البريد الإلكتروني
+    try {
+      await transporter.verify();
+      console.log("✅ Server is ready to send emails");
+    } catch (err) {
+      console.error("❌ Email server verification failed:", err.message);
+      return res.status(500).json({
+        error: "Email server verification failed",
+        details: err.message,
+      });
+    }
+
+    // 3. إعداد الإيميل
     const mailOptions = {
-      from: `"${fullName}" <${process.env.GMAIL_USER}>`,
-      replyTo: email,
-      to: process.env.GMAIL_USER,
+      from: `"${fullName}" <${process.env.GMAIL_USER}>`, // مهم يكون نفس الحساب
+      replyTo: email, // الرد يروح لإيميل اليوزر
+      to: process.env.GMAIL_USER, // إيميلك الرسمي (المستلم)
       subject: "🔔 استشارة جديدة من الموقع",
       html: `
         <h3>تفاصيل الطلب:</h3>
@@ -515,22 +512,12 @@ app.post("/addUser", async (req, res) => {
       `,
     };
 
-    // 6️⃣ إرسال البريد الإلكتروني
-    try {
-      await transporter.sendMail(mailOptions);
-      console.log("✅ Email sent successfully");
-    } catch (err) {
-      console.error("❌ Failed to send email:", err.message);
-      return res.status(500).json({
-        error: "Failed to send email",
-        details: err.message,
-      });
-    }
+    // 6️⃣ إرسال الإيميل
+    await transporter.sendMail(mailOptions);
 
-    // 7️⃣ الرد على الواجهة
     res.status(200).json({
       message: "User added successfully and email sent!",
-      userId: savedUser._id,
+      userId: user._id,
     });
   } catch (error) {
     console.error("❌ Error adding user or sending email:", error);
