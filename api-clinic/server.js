@@ -3,6 +3,8 @@ const session = require("express-session"); // For using sessions
 const MongoStore = require("connect-mongo");
 const cors = require("cors");
 const express = require("express");
+const fetch = require("node-fetch");
+const { Resend } = require("resend");
 const bodyParser = require("body-parser");
 const geoip = require("geoip-lite");
 
@@ -344,7 +346,7 @@ app.post("/addYearAppointments", async (req, res) => {
 const nodemailer = require("nodemailer");
 
 // Request Consultation
-const fetch = require("node-fetch"); // تأكد إنه موجود
+// const fetch = require("node-fetch"); // تأكد إنه موجود
 
 // Request Consultation
 // app.post("/addUser", async (req, res) => {
@@ -427,9 +429,112 @@ const fetch = require("node-fetch"); // تأكد إنه موجود
 //   }
 // });
 
-// Request Consultation **WITH RECAPTCHA**
+// Request Consultation ****
+// app.post("/addUser", async (req, res) => {
+//   console.log("req.body", req.body);
+//   const {
+//     fullName,
+//     email,
+//     phone,
+//     additionalInfo,
+//     "g-recaptcha-response": recaptchaResponse,
+//   } = req.body;
+
+//   // 1️⃣ تحقق من الحقول الأساسية
+//   if (!fullName || !email) {
+//     return res
+//       .status(400)
+//       .json({ error: "Please provide all required fields." });
+//   }
+
+//   // 2️⃣ تحقق من reCAPTCHA
+//   if (!recaptchaResponse) {
+//     return res
+//       .status(400)
+//       .json({ error: "Please complete the reCAPTCHA verification." });
+//   }
+
+//   try {
+//     const secretKey = process.env.RECAPTCHA_SECRET_KEY; // المفتاح السري
+//     const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${recaptchaResponse}`;
+
+//     const recaptchaRes = await fetch(verifyUrl, { method: "POST" });
+//     const recaptchaData = await recaptchaRes.json();
+
+//     if (!recaptchaData.success) {
+//       return res
+//         .status(400)
+//         .json({ error: "reCAPTCHA verification failed. Please try again." });
+//     }
+
+//     // 3️⃣ حفظ البيانات في الداتابيس
+//     const user = new User({
+//       fullName,
+//       email,
+//       phone,
+//       additionalInfo: additionalInfo || "",
+//       createdAt: new Date(),
+//     });
+
+//     await user.save();
+
+//     // 2. إعداد transporter مع Gmail
+//     const transporter = nodemailer.createTransport({
+//       host: "smtp.gmail.com",
+//       port: 587,
+//       secure: false, // TLS
+//       auth: {
+//         user: process.env.GMAIL_USER,
+//         pass: process.env.GMAIL_APP_PASS,
+//       },
+//     });
+
+//     try {
+//       await transporter.verify();
+//       console.log("✅ Server is ready to send emails");
+//     } catch (err) {
+//       console.error("❌ Email server verification failed:", err.message);
+//       return res.status(500).json({
+//         error: "Email server verification failed",
+//         details: err.message,
+//       });
+//     }
+
+//     // 3. إعداد الإيميل
+//     const mailOptions = {
+//       from: `"${fullName}" <${process.env.GMAIL_USER}>`, // مهم يكون نفس الحساب
+//       replyTo: email, // الرد يروح لإيميل اليوزر
+//       to: process.env.GMAIL_USER, // إيميلك الرسمي (المستلم)
+//       subject: "🔔 استشارة جديدة من الموقع",
+//       html: `
+//         <h3>تفاصيل الطلب:</h3>
+//         <p><b>الاسم:</b> ${fullName}</p>
+//         <p><b>الإيميل:</b> ${email}</p>
+//         <p><b>الهاتف:</b> ${phone || "-"}</p>
+//         <p><b>معلومات إضافية:</b> ${additionalInfo || "-"}</p>
+//         <p><i>تم الإرسال بتاريخ: ${new Date().toLocaleString()}</i></p>
+//       `,
+//     };
+
+//     // 6️⃣ إرسال الإيميل
+//     await transporter.sendMail(mailOptions);
+//     res.status(200).json({
+//       message: "User added successfully and email sent!",
+//       userId: user._id,
+//     });
+//   } catch (error) {
+//     console.error("❌ Error adding user or sending email:", error);
+//     res.status(500).json({
+//       error: "An error occurred while adding the user",
+//       details: error.message,
+//     });
+//   }
+// });
+
+// إعداد Resend API
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 app.post("/addUser", async (req, res) => {
-  console.log("req.body", req.body);
   const {
     fullName,
     email,
@@ -453,9 +558,9 @@ app.post("/addUser", async (req, res) => {
   }
 
   try {
-    const secretKey = process.env.RECAPTCHA_SECRET_KEY; // المفتاح السري
+    // 3️⃣ التحقق من reCAPTCHA مع Google
+    const secretKey = process.env.RECAPTCHA_SECRET_KEY;
     const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${recaptchaResponse}`;
-
     const recaptchaRes = await fetch(verifyUrl, { method: "POST" });
     const recaptchaData = await recaptchaRes.json();
 
@@ -465,7 +570,7 @@ app.post("/addUser", async (req, res) => {
         .json({ error: "reCAPTCHA verification failed. Please try again." });
     }
 
-    // 3️⃣ حفظ البيانات في الداتابيس
+    // 4️⃣ حفظ البيانات في MongoDB
     const user = new User({
       fullName,
       email,
@@ -473,59 +578,35 @@ app.post("/addUser", async (req, res) => {
       additionalInfo: additionalInfo || "",
       createdAt: new Date(),
     });
-
     await user.save();
 
-    // 2. إعداد transporter مع Gmail
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false, // TLS
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP_PASS,
-      },
+    // 5️⃣ إعداد البريد
+    const htmlContent = `
+      <h3>تفاصيل الاستشارة:</h3>
+      <p><b>الاسم:</b> ${fullName}</p>
+      <p><b>الإيميل:</b> ${email}</p>
+      <p><b>الهاتف:</b> ${phone || "-"}</p>
+      <p><b>معلومات إضافية:</b> ${additionalInfo || "-"}</p>
+      <hr>
+      <p><i>تم الإرسال بتاريخ: ${new Date().toLocaleString()}</i></p>
+    `;
+
+    // 6️⃣ إرسال البريد عبر Resend
+    await resend.emails.send({
+      from: process.env.SENDER_EMAIL, // بريد موثق عند Resend
+      to: process.env.MY_GMAIL, // بريدك لتستقبل الاستشارات
+      reply_to: email, // الرد يذهب للمستخدم مباشرة
+      subject: "🩺 استشارة جديدة من الموقع",
+      html: htmlContent,
     });
 
-    // try {
-    //   await transporter.verify();
-    //   console.log("✅ Server is ready to send emails");
-    // } catch (err) {
-    //   console.error("❌ Email server verification failed:", err.message);
-    //   return res.status(500).json({
-    //     error: "Email server verification failed",
-    //     details: err.message,
-    //   });
-    // }
-
-    // 3. إعداد الإيميل
-    const mailOptions = {
-      from: `"${fullName}" <${process.env.GMAIL_USER}>`, // مهم يكون نفس الحساب
-      replyTo: email, // الرد يروح لإيميل اليوزر
-      to: process.env.GMAIL_USER, // إيميلك الرسمي (المستلم)
-      subject: "🔔 استشارة جديدة من الموقع",
-      html: `
-        <h3>تفاصيل الطلب:</h3>
-        <p><b>الاسم:</b> ${fullName}</p>
-        <p><b>الإيميل:</b> ${email}</p>
-        <p><b>الهاتف:</b> ${phone || "-"}</p>
-        <p><b>معلومات إضافية:</b> ${additionalInfo || "-"}</p>
-        <p><i>تم الإرسال بتاريخ: ${new Date().toLocaleString()}</i></p>
-      `,
-    };
-
-    // 6️⃣ إرسال الإيميل
-    await transporter.sendMail(mailOptions);
     res.status(200).json({
-      message: "User added successfully and email sent!",
+      message: "✅ User added successfully and email sent via Resend!",
       userId: user._id,
     });
   } catch (error) {
-    console.error("❌ Error adding user or sending email:", error);
-    res.status(500).json({
-      error: "An error occurred while adding the user",
-      details: error.message,
-    });
+    console.error("❌ Error:", error);
+    res.status(500).json({ error: error.message });
   }
 });
 
