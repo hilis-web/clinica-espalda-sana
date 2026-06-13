@@ -71,27 +71,31 @@
       <!-- </div> -->
 
       <!-- Additional Information -->
-      <div class="mb-3">
-        <label
-          for="additionalInfo"
-          class="form-label"
-          data-i18n="additional_info_label"
-          >Additional Information</label
-        >
-        <textarea
-          id="consultationadditionalInfo"
-          name="additionalInfo"
-          class="form-control"
-          rows="3"
-          placeholder="Enter any additional information"
-        ></textarea>
-      </div>
+      <div class="mb-3 row" style="align-items: end">
+        <div class="col-md-6">
+          <label
+            for="additionalInfo"
+            class="form-label"
+            data-i18n="additional_info_label"
+            >Additional Information</label
+          >
+          <textarea
+            id="consultationadditionalInfo"
+            name="additionalInfo"
+            class="form-control"
+            rows="3"
+            placeholder="Enter any additional information"
+          ></textarea>
+        </div>
 
-      <!-- reCAPTCHA widget -->
-      <div
-        class="g-recaptcha"
-        data-sitekey="6LfWLgosAAAAADXiUc43PJerAAHzoYNeek1DdtCl"
-      ></div>
+        <div class="col-md-4">
+          <!-- reCAPTCHA widget -->
+          <div
+            class="g-recaptcha"
+            data-sitekey="6LfWLgosAAAAADXiUc43PJerAAHzoYNeek1DdtCl"
+          ></div>
+        </div>
+      </div>
 
       <!-- Submit Button -->
       <button
