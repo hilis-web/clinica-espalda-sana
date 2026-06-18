@@ -1,6 +1,6 @@
-const API_BASE_URL = "http://localhost:3000";
+// const API_BASE_URL = "http://localhost:3000";
 // const API_BASE_URL = 'https://user-api-server.onrender.com';
-// const API_BASE_URL = "https://aaron-clinic-1.onrender.com";
+const API_BASE_URL = "https://aaron-clinic-1.onrender.com";
 //#region TOKEN
 // Check the token
 const token = localStorage.getItem("token");
@@ -273,8 +273,8 @@ function loadArticles() {
                       article._id
                     }"
                       ${isChecked} onclick="toggleStatus('${
-            article._id
-          }', this.checked)">
+                        article._id
+                      }', this.checked)">
                     <label class="form-check-label" for="switch-${article._id}">
                       ${article.status}
                     </label>
@@ -287,13 +287,13 @@ function loadArticles() {
         $("#content").html(articlesHTML);
       } else {
         $("#content").html(
-          '<button type="button" class="btn btn-primary add-float" data-bs-toggle="modal" data-bs-target="#addArticlePopup">Add New Article </button><p class="text-danger">No articles available.</p>'
+          '<button type="button" class="btn btn-primary add-float" data-bs-toggle="modal" data-bs-target="#addArticlePopup">Add New Article </button><p class="text-danger">No articles available.</p>',
         );
       }
     },
     error: function () {
       $("#content").html(
-        '<button type="button" class="btn btn-primary add-float" data-bs-toggle="modal" data-bs-target="#addArticlePopup">Add New Article </button><p class="text-danger">No articles available.</p>'
+        '<button type="button" class="btn btn-primary add-float" data-bs-toggle="modal" data-bs-target="#addArticlePopup">Add New Article </button><p class="text-danger">No articles available.</p>',
       );
     },
   });
@@ -372,7 +372,7 @@ function loadCalendar() {
                     `;
 
             $("body").append(
-              `<div class="popup-container">${popupContent}</div>`
+              `<div class="popup-container">${popupContent}</div>`,
             );
 
             $("#closePopup").click(function () {
@@ -390,7 +390,7 @@ function loadCalendar() {
                   info.event.setProp("borderColor", getBorderColor(newStatus));
                   info.event.setProp(
                     "title",
-                    getEventTitle({ _id: currentId, status: newStatus })
+                    getEventTitle({ _id: currentId, status: newStatus }),
                   );
                   info.event.setExtendedProp("status", newStatus);
                   $(".popup-container").remove();
@@ -446,8 +446,8 @@ function getColor(status) {
   return status === "booked"
     ? "orange"
     : status === "locked"
-    ? "lightgray"
-    : "green";
+      ? "lightgray"
+      : "green";
 }
 
 // Function to choose the border color based on the status
@@ -455,8 +455,8 @@ function getBorderColor(status) {
   return status === "booked"
     ? "darkorange"
     : status === "locked"
-    ? "gray"
-    : "darkgreen";
+      ? "gray"
+      : "darkgreen";
 }
 console.log("test");
 
@@ -471,13 +471,13 @@ function viewArticle(articleId) {
       const imagesHTML = article.images
         .map(
           (img) =>
-            `<img src="${img}" class="img-fluid mb-2" style="max-width: 100%; height: auto;">`
+            `<img src="${img}" class="img-fluid mb-2" style="max-width: 100%; height: auto;">`,
         )
         .join("");
       const videosHTML = article.videos
         .map(
           (video) =>
-            `<a href="${video}" target="_blank" class="d-block text-primary">Watch Video</a>`
+            `<a href="${video}" target="_blank" class="d-block text-primary">Watch Video</a>`,
         )
         .join("");
       const keywordsHTML = article.keywords.join(", ");
@@ -487,7 +487,7 @@ function viewArticle(articleId) {
       const sourcesHTML = article.sources
         .map(
           (source) =>
-            `<li><a href="${source}" target="_blank">${source}</a></li>`
+            `<li><a href="${source}" target="_blank">${source}</a></li>`,
         )
         .join("");
 
@@ -512,10 +512,10 @@ function viewArticle(articleId) {
             article.status === "Published" ? "bg-success" : "bg-secondary"
           }">${article.status}</span></p>
           <p><strong>Created At:</strong> ${new Date(
-            article.created_at
+            article.created_at,
           ).toLocaleString()}</p>
           <p><strong>Updated At:</strong> ${new Date(
-            article.updated_at
+            article.updated_at,
           ).toLocaleString()}</p>
         `;
 
