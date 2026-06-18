@@ -1,7 +1,7 @@
 // URL الأساسي للسيرفر
-const API_BASE_URL = "http://localhost:3000";
-// const API_BASE_URL = 'https://user-api-server.onrender.com';
-// const API_BASE_URL = "https://aaron-clinic-1.onrender.com";
+//const API_BASE_URL = "http://localhost:3000";
+//const API_BASE_URL = "https://user-api-server.onrender.com";
+const API_BASE_URL = "https://aaron-clinic-1.onrender.com";
 
 // Handle consultation request submission
 async function submitConsultationForm(formData) {
@@ -17,7 +17,7 @@ async function submitConsultationForm(formData) {
     const result = await response.json();
     if (response.ok) {
       alert(
-        `The consultation request has been successfully submitted! User ID: ${result.userId}`
+        `The consultation request has been successfully submitted! User ID: ${result.userId}`,
       );
     } else {
       alert(`Error: ${result.error}`);
@@ -112,29 +112,29 @@ function updateClinicUI(data) {
   //CSS VARIABLES
   document.documentElement.style.setProperty(
     "--primary-font-family",
-    data.theme.font ? data.theme.font : "Arial, sans-serif"
+    data.theme.font ? data.theme.font : "Arial, sans-serif",
   );
   document.documentElement.style.setProperty(
     "--secondary-font-family",
     data.theme.secondaryFontFamily
       ? data.theme.secondaryFontFamily
-      : "Arial, sans-serif"
+      : "Arial, sans-serif",
   );
   document.documentElement.style.setProperty(
     "--primary-color",
-    data.theme.primaryColor
+    data.theme.primaryColor,
   );
   document.documentElement.style.setProperty(
     "--primary-font-color",
-    data.theme.primaryFontColor
+    data.theme.primaryFontColor,
   );
   document.documentElement.style.setProperty(
     "--secondary-color",
-    data.theme.secondaryColor
+    data.theme.secondaryColor,
   );
   document.documentElement.style.setProperty(
     "--secondary-font-color",
-    data.theme.secondaryFontColor
+    data.theme.secondaryFontColor,
   );
 
   $("body").css({
@@ -191,7 +191,7 @@ function updateLanguageDropdown(languages) {
   dropdownMenu.empty();
   if (!languages || languages.length === 0) {
     dropdownMenu.append(
-      '<li class="text-muted px-3">No languages available</li>'
+      '<li class="text-muted px-3">No languages available</li>',
     );
     return;
   }
@@ -227,7 +227,7 @@ function initializeI18n() {
         if (err) return console.error("i18next error:", err);
         updateContent();
         updateLanguageButton(i18next.language);
-      }
+      },
     );
 }
 
