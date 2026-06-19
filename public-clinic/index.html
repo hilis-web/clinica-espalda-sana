@@ -1,41 +1,42 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="assets/images/logo.png" type="image/png">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="assets/images/logo.png" type="image/png" />
     <title>Clinic Website</title>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.6.0/css/flag-icon.min.css">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.6.0/css/flag-icon.min.css"
+    />
 
     <!-- Custom CSS -->
-    <link href="/assets/css/style.css" rel="stylesheet">
-
+    <link href="/assets/css/style.css" rel="stylesheet" />
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  </head>
 
-</head>
-
-<body>
-
+  <body>
     <div class="headerShared"></div>
-    <div class="navbarShared" style="position: sticky !important;"></div>
+    <div class="navbarShared" style="position: sticky !important"></div>
     <div class="cookiesShared"></div>
     <div class="consultationFormShared"></div>
 
-
-
     <!-- Hero Section -->
     <section id="sectionHero" class="hero-slider">
-
-
-        <!-- Appointment Form Section -->
-        <!-- <div class="appointment-form">
+      <!-- Appointment Form Section -->
+      <!-- <div class="appointment-form">
 
             <form id="appointmentForm">
                 <h4 class="text-center mb-4" data-i18n="appointment_schedule">Schedule Your Appointment Now</h2>
@@ -112,117 +113,201 @@
 
         </div> -->
 
-        <!-- Booking Result Modal -->
-        <div class="modal fade" id="bookingModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content text-center">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalTitle">Title</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div id="modalIcon" class="mb-3" style="font-size: 60px;"></div>
-                        <p id="modalMessage"></p>
-                    </div>
-                    <div class="modal-footer justify-content-center">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
+      <!-- Booking Result Modal -->
+      <div
+        class="modal fade"
+        id="bookingModal"
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content text-center">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalTitle">Title</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
             </div>
+            <div class="modal-body">
+              <div id="modalIcon" class="mb-3" style="font-size: 60px"></div>
+              <p id="modalMessage"></p>
+            </div>
+            <div class="modal-footer justify-content-center">
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal for Terms -->
+      <div
+        class="modal fade"
+        id="termsModal"
+        tabindex="-1"
+        aria-labelledby="termsModalLabel"
+        aria-hidden="true"
+      >
+        <div
+          class="modal-dialog"
+          width="100%"
+          style="max-width: 1000px !important"
+        >
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="termsModalLabel">Terms of Service</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <!-- ضع هنا نص الشروط -->
+              Here are the terms of service...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal for Conditions -->
+      <div
+        class="modal fade"
+        id="conditionsModal"
+        tabindex="-1"
+        aria-labelledby="conditionsModalLabel"
+        aria-hidden="true"
+      >
+        <div
+          class="modal-dialog"
+          width="100%"
+          style="max-width: 1000px !important"
+        >
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="conditionsModalLabel">Conditions</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <!-- ضع هنا نص الشروط -->
+              Here are the conditions...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <!-- Slide 1 -->
+          <div
+            class="carousel-item active"
+            style="
+              background-image: url(&quot;https://res.cloudinary.com/dheh8ee3r/image/upload/v1738760173/golf_kt4o3t.jpg&quot;);
+              background-size: cover;
+              background-position: center;
+              height: 75vh;
+            "
+          >
+            <div class="carousel-caption text-start text-white">
+              <h1 data-i18n="carousel_welcome">Welcome to Our Clinic</h1>
+              <p data-i18n="carousel_description">
+                We offer high-quality medical care in all specialties.
+              </p>
+              <a href="#" class="btn btn-secondary" data-i18n="read_more"
+                >Read More</a
+              >
+            </div>
+          </div>
+          <!-- Slide 2 -->
+          <div
+            class="carousel-item"
+            style="
+              background-image: url(&quot;../assets/images/tennis.jpg&quot;);
+              background-size: cover;
+              background-position: center;
+              height: 75vh;
+            "
+          >
+            <div class="carousel-caption text-start text-white">
+              <h1 data-i18n="carousel_best_medical_care">
+                The Best Medical Care
+              </h1>
+              <p data-i18n="carousel_team_assistance">
+                Our team of doctors is ready to assist you.
+              </p>
+              <a href="#" class="btn btn-secondary" data-i18n="read_more"
+                >Read More</a
+              >
+            </div>
+          </div>
+          <!-- Slide 3 -->
+          <div
+            class="carousel-item"
+            style="
+              background-image: url(&quot;../assets/images/yoga.jpg&quot;);
+              background-size: cover;
+              background-position: center;
+              height: 75vh;
+            "
+          >
+            <div class="carousel-caption text-start text-white">
+              <h1 data-i18n="carousel_comprehensive_sections">
+                Comprehensive Medical Sections
+              </h1>
+              <p data-i18n="carousel_high_quality_healthcare">
+                High-quality healthcare in a comfortable and safe environment.
+              </p>
+              <a href="#" class="btn btn-secondary" data-i18n="read_more"
+                >Read More</a
+              >
+            </div>
+          </div>
         </div>
 
-
-        <!-- Modal for Terms -->
-        <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
-            <div class="modal-dialog" width="100%" style="max-width: 1000px !important;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="termsModalLabel">Terms of Service</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <!-- ضع هنا نص الشروط -->
-                        Here are the terms of service...
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal for Conditions -->
-        <div class="modal fade" id="conditionsModal" tabindex="-1" aria-labelledby="conditionsModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" width="100%" style="max-width: 1000px !important;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="conditionsModalLabel">Conditions</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <!-- ضع هنا نص الشروط -->
-                        Here are the conditions...
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-
-
-
-        <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                <!-- Slide 1 -->
-                <div class="carousel-item active"
-                    style="background-image: url('https://res.cloudinary.com/dheh8ee3r/image/upload/v1738760173/golf_kt4o3t.jpg'); background-size: cover; background-position: center; height: 75vh;">
-                    <div class="carousel-caption text-start text-white">
-                        <h1 data-i18n="carousel_welcome">Welcome to Our Clinic</h1>
-                        <p data-i18n="carousel_description">We offer high-quality medical care in all specialties.</p>
-                        <a href="#" class="btn btn-secondary" data-i18n="read_more">Read More</a>
-                    </div>
-                </div>
-                <!-- Slide 2 -->
-                <div class="carousel-item"
-                    style="background-image: url('../assets/images/tennis.jpg'); background-size: cover; background-position: center; height: 75vh;">
-                    <div class="carousel-caption text-start text-white">
-                        <h1 data-i18n="carousel_best_medical_care">The Best Medical Care</h1>
-                        <p data-i18n="carousel_team_assistance">Our team of doctors is ready to assist you.</p>
-                        <a href="#" class="btn btn-secondary" data-i18n="read_more">Read More</a>
-                    </div>
-                </div>
-                <!-- Slide 3 -->
-                <div class="carousel-item"
-                    style="background-image: url('../assets/images/yoga.jpg'); background-size: cover; background-position: center; height: 75vh;">
-                    <div class="carousel-caption text-start text-white">
-                        <h1 data-i18n="carousel_comprehensive_sections">Comprehensive Medical Sections</h1>
-                        <p data-i18n="carousel_high_quality_healthcare">High-quality healthcare in a comfortable and
-                            safe environment.</p>
-                        <a href="#" class="btn btn-secondary" data-i18n="read_more">Read More</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Carousel Controls -->
-            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-        </div>
+        <!-- Carousel Controls -->
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#heroCarousel"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#heroCarousel"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
     </section>
-
 
     <!-- About -->
     <section id="sectionAbout" class="clinic-info py-5">
-        <div class="container">
-            <div class="row">
-                <!-- Text -->
-                <div class="col-md-6">
-                    <h2 data-i18n="about_clinic">About Our Clinic</h2>
-                    <!-- <p class="cinic-about">
+      <div class="container">
+        <div class="row">
+          <!-- Text -->
+          <div class="col-md-6">
+            <h2 data-i18n="about_clinic">About Our Clinic</h2>
+            <!-- <p class="cinic-about">
                         Dr. Aaron is a spine surgeon specializing in traumatology and orthopedic surgery, with extensive
                         experience, based in Extremadura. He has received training at prestigious centers of excellence
                         in
@@ -234,74 +319,88 @@
                         pain, childhood and adult deformities (scoliosis), trauma, infections, and tumor surgery.
                     </p> -->
 
-                    <p>El Dr. Aaron es un cirujano de columna vertebral especializado en cirugía ortopédica y
-                        neurocirugía,
-                        con una amplia trayectoria profesional y establecido en Extremadura. Su formación se llevó a
-                        cabo
-                        en reconocidos centros de excelencia en cirugía de columna en España, el Reino Unido y los
-                        Estados Unidos,
-                        consolidando su experiencia en ambas disciplinas. Es Doctor en Medicina y Cirugía por la
-                        Universidad de Santiago
-                        de Compostela y cuenta con una extensa trayectoria en investigación y publicaciones académicas.
-                    </p>
+            <p data-i18n="about_clinic_desc">
+              El Dr. Aaron es un cirujano de columna vertebral especializado en
+              cirugía ortopédica y neurocirugía, con una amplia trayectoria
+              profesional y establecido en Extremadura. Su formación se llevó a
+              cabo en reconocidos centros de excelencia en cirugía de columna en
+              España, el Reino Unido y los Estados Unidos, consolidando su
+              experiencia en ambas disciplinas. Es Doctor en Medicina y Cirugía
+              por la Universidad de Santiago de Compostela y cuenta con una
+              extensa trayectoria en investigación y publicaciones académicas.
+            </p>
 
-                    <p>El Dr. Aaron trata un amplio espectro de afecciones de la columna,
-                        incluyendo dolor ciático, dolor de espalda (lumbago), dolor cervical,
-                        deformidades en niños y adultos (escoliosis), traumatismos, infecciones y tumores.
-                        Actualmente, su práctica se enfoca en casos complejos y en cirugías de revisión. Estamos seguros
-                        de que podemos ofrecerle una opinión equilibrada, altamente competente y confidencial sobre sus
-                        problemas de espalda.<br />
-                        ¿Podemos ayudarte?
-                    </p>
-
-
-
-
+            <p>
+              El Dr. Aaron trata un amplio espectro de afecciones de la columna,
+              incluyendo dolor ciático, dolor de espalda (lumbago), dolor
+              cervical, deformidades en niños y adultos (escoliosis),
+              traumatismos, infecciones y tumores. Actualmente, su práctica se
+              enfoca en casos complejos y en cirugías de revisión. Estamos
+              seguros de que podemos ofrecerle una opinión equilibrada,
+              altamente competente y confidencial sobre sus problemas de
+              espalda.<br />
+              ¿Podemos ayudarte?
+            </p>
+          </div>
+          <!-- Slider -->
+          <div class="col-md-6">
+            <div
+              id="clinicCarousel"
+              class="carousel slide"
+              data-bs-ride="carousel"
+            >
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <img src="assets/images/clinic1.jpg" alt="Clinic Image 1" />
                 </div>
-                <!-- Slider -->
-                <div class="col-md-6">
-                    <div id="clinicCarousel" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img src="assets/images/clinic1.jpg" alt="Clinic Image 1">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="assets/images/clinic2.png" alt="Clinic Image 2">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="assets/images/clinic3.jpg" alt="Clinic Image 3">
-                            </div>
-                        </div>
-                        <!-- Control buttons -->
-                        <button class="carousel-control-prev" type="button" data-bs-target="#clinicCarousel"
-                            data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#clinicCarousel"
-                            data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    </div>
+                <div class="carousel-item">
+                  <img src="assets/images/clinic2.png" alt="Clinic Image 2" />
                 </div>
+                <div class="carousel-item">
+                  <img src="assets/images/clinic3.jpg" alt="Clinic Image 3" />
+                </div>
+              </div>
+              <!-- Control buttons -->
+              <button
+                class="carousel-control-prev"
+                type="button"
+                data-bs-target="#clinicCarousel"
+                data-bs-slide="prev"
+              >
+                <span
+                  class="carousel-control-prev-icon"
+                  aria-hidden="true"
+                ></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button
+                class="carousel-control-next"
+                type="button"
+                data-bs-target="#clinicCarousel"
+                data-bs-slide="next"
+              >
+                <span
+                  class="carousel-control-next-icon"
+                  aria-hidden="true"
+                ></span>
+                <span class="visually-hidden">Next</span>
+              </button>
             </div>
+          </div>
         </div>
+      </div>
     </section>
 
     <section id="sectionSections" class="sections-info py-5">
-        <div class="container">
-            <div id="sectionsSection" class="row row-cols-1 row-cols-md-3 g-4">
-                <!-- Sections will be populated here by jQuery -->
-            </div>
-
+      <div class="container">
+        <div id="sectionsSection" class="row row-cols-1 row-cols-md-3 g-4">
+          <!-- Sections will be populated here by jQuery -->
         </div>
+      </div>
     </section>
 
     <!-- Footer Section -->
     <div class="footerShared"></div>
-
-
 
     <!-- Files -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
@@ -316,28 +415,20 @@
     <script src="assets/js/script.js"></script>
     <script src="assets/js/cookies.js"></script>
 
-
     <script>
-        $(document).ready(function () {
+      $(document).ready(function () {
+        var localSelectedNavItem = localStorage.getItem("selectedNavItem");
 
-            var localSelectedNavItem = localStorage.getItem("selectedNavItem");
+        $(".navbar-nav li").removeClass("active");
 
-            $('.navbar-nav li').removeClass("active");
+        $("#" + localSelectedNavItem).addClass("active");
+        $("#" + localSelectedNavItem).css("background", "#43a044");
+      });
 
-
-            $('#' + localSelectedNavItem).addClass("active");
-            $('#' + localSelectedNavItem).css("background", "#43a044");
-
-            
-
-        });
-
-        var cookiesLocal = false;
-        if (localStorage.getItem("cookiesAccepted") == true) {
-            $("#cookieConsentBanner").css("display", "none !important")
-        }
-
+      var cookiesLocal = false;
+      if (localStorage.getItem("cookiesAccepted") == true) {
+        $("#cookieConsentBanner").css("display", "none !important");
+      }
     </script>
-</body>
-
+  </body>
 </html>
