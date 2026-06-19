@@ -1,30 +1,24 @@
 // localStorage.setItem("selectedNavItem", "index");
 
-
 $(document).ready(function () {
-
-
   const urlParams = new URLSearchParams(window.location.search);
-  const sectionId = urlParams.get('sectionId');
-  const categoryId = urlParams.get('categoryId');
+  const sectionId = urlParams.get("sectionId");
+  const categoryId = urlParams.get("categoryId");
   if (sectionId && categoryId) {
     loadSubcategoryDetails(sectionId, categoryId);
-  }
-  else if (sectionId) {
+  } else if (sectionId) {
     if (typeof loadCategories === "function") {
       loadCategories(sectionId);
     } else {
-      console.error("Function loadCategories is not defined. Check if app.js is loaded.");
+      console.error(
+        "Function loadCategories is not defined. Check if app.js is loaded.",
+      );
     }
-  }
-  else {
+  } else {
     console.error("Section ID not found in URL");
   }
 
-
-
   fetchSections();
-
 
   // $('#google-login').click(function () {
   //   $.ajax({
@@ -40,29 +34,24 @@ $(document).ready(function () {
   //   });
   // });
 
-
-  $('#google-login').click(function () {
+  $("#google-login").click(function () {
     window.location.href = API_BASE_URL;
     // window.location.href = 'http://192.168.1.33:3000/api/auth/google';
-
   });
 
-  $('#microsoft-login').click(function () {
+  $("#microsoft-login").click(function () {
     $.ajax({
-      url: '/api/auth/microsoft',
-      method: 'GET',
+      url: "/api/auth/microsoft",
+      method: "GET",
       success: function (response) {
         // معالجة الاستجابة هنا
-        window.location.href = '/';
+        window.location.href = "/";
       },
       error: function (error) {
-        console.error('Error logging in with Microsoft', error);
-      }
+        console.error("Error logging in with Microsoft", error);
+      },
     });
   });
-
-
-
 
   // دالة للبحث عن الأقسام وعرضها في الـ Navbar
   //  function loadSections() {
@@ -105,21 +94,17 @@ $(document).ready(function () {
   //   });
   // }
 
-  // loadSections(); 
+  // loadSections();
   // localStorage.setItem("selectedNavItem", selectedNavItem);
-
-
-
-
 
   function loadSectionsStatic() {
     $.get(`${API_BASE_URL}/newsection/navstatic/section`, function (sections) {
       // تحديث navbar بالبيانات المأخوذة من الـ backend
       if (sections && Array.isArray(sections)) {
-        const navList = $('.sectionsList');
+        const navList = $(".sectionsList");
 
-        sections.forEach(section => {
-          const sectionTitle = section.title;  // العنوان بالـ إسباني أو بالعربي
+        sections.forEach((section) => {
+          const sectionTitle = section.title; // العنوان بالـ إسباني أو بالعربي
           const categories = section.categories;
           //const i18nData = section.i18next;
           // إضافة قسم جديد
@@ -128,26 +113,33 @@ $(document).ready(function () {
                       <a class="section-link nav-link text-white menu-link" href="#" data-page-title="${section.title}" data-page-description="${section.description}" data-page-name="${section.page}" data-section-id="${section.sectionId}" role="button" id="${section.sectionId}" aria-expanded="false" data-i18n="${section.i18next}">
                           ${sectionTitle}
                       </a>
-                      ${categories.length > 0 ? `
+                      ${
+                        categories.length > 0
+                          ? `
                           <ul class="submenu">
-                              ${categories.map(cat => `
+                              ${categories
+                                .map(
+                                  (cat) => `
                                   <li><a href="#" class="category-link" data-page-title="${section.title}" data-page-description="${section.description}" data-page-name="${section.page}" data-section-id="${section.sectionId}" data-category-id="${cat.categoryId}">${cat.title.es}</a></li>
-                              `).join('')}
+                              `,
+                                )
+                                .join("")}
                           </ul>
-                      ` : ''}
+                      `
+                          : ""
+                      }
                   </li>
               `;
           navList.append(sectionItem);
         });
 
-        $('.category-link').click(function (e) {
+        $(".category-link").click(function (e) {
           e.preventDefault();
-          const sectionId = $(this).data('section-id');
-          const categoryId = $(this).data('category-id');
-          const pageName = $(this).data('page-name');
-          const sectionTitle = $(this).data('page-title');
-          const sectionDescription = $(this).data('page-description');
-
+          const sectionId = $(this).data("section-id");
+          const categoryId = $(this).data("category-id");
+          const pageName = $(this).data("page-name");
+          const sectionTitle = $(this).data("page-title");
+          const sectionDescription = $(this).data("page-description");
 
           var selectedNavItem = pageName || "index";
           localStorage.setItem("selectedNavItem", selectedNavItem);
@@ -155,29 +147,22 @@ $(document).ready(function () {
           localStorage.setItem("sectionTitle", sectionTitle);
           localStorage.setItem("sectionDescription", sectionDescription);
 
-
           setTimeout(function () {
             window.location.href = `subcategory.html?sectionId=${sectionId}&categoryId=${categoryId}`;
           }, 20);
 
-
           // window.location.href = `${pageName}.html?sectionId=${sectionId}&categoryId=${categoryId}`;
         });
-        $('.section-link').click(function (e) {
+        $(".section-link").click(function (e) {
           e.preventDefault();
-          const pageName = $(this).data('page-name');
-          const sectionId = $(this).data('section-id');
+          const pageName = $(this).data("page-name");
+          const sectionId = $(this).data("section-id");
 
-
-          const sectionTitle = $(this).data('page-title');
-          const sectionDescription = $(this).data('page-description');
-
-
-
+          const sectionTitle = $(this).data("page-title");
+          const sectionDescription = $(this).data("page-description");
 
           var selectedNavItem = pageName || "index";
           localStorage.setItem("selectedNavItem", selectedNavItem);
-
 
           localStorage.setItem("sectionTitle", sectionTitle);
           localStorage.setItem("sectionDescription", sectionDescription);
@@ -194,52 +179,41 @@ $(document).ready(function () {
 
           //window.location.href = `subcategory.html?sectionId=${sectionId}&categoryId=${categoryId}`;
 
-
-
-
           // window.location.href = `categories.html?sectionId=${sectionId}`;
         });
-
-
       }
     }).fail(function () {
       console.error("Error loading sections.");
     });
   }
 
-
   loadSectionsStatic();
   let headerTitle = localStorage.getItem("sectionTitle");
   let headerDescription = localStorage.getItem("sectionDescription");
-
 
   $("#headerTitle").text(headerTitle);
   $("#headerDescription").text(headerDescription);
 });
 
-
-
-
-
-
 // جعل الدالة متاحة عالميًا
 window.loadCategories = function (sectionId) {
-  const lang = 'en';
+  const lang = "en";
 
   $.ajax({
     url: `${API_BASE_URL}/newsection/section/${sectionId}/categories`,
-    method: 'GET',
+    method: "GET",
     success: function (categories) {
-      $('#categoriesSection').empty();
+      $("#categoriesSection").empty();
 
       console.log("####categories####", categories);
 
-      categories.forEach(category => {
+      categories.forEach((category) => {
         console.log("%%%%category%%%%", category);
 
-        const title = category.title[lang] || category.title['es'];
-        const description = category.description[lang] || category.description['es'];
-        const content = category.content[lang] || category.content['es'];
+        const title = category.title[lang] || category.title["es"];
+        const description =
+          category.description[lang] || category.description["es"];
+        const content = category.content[lang] || category.content["es"];
         const categoryId = category.categoryId;
 
         // $('#categoriesSection').append(`
@@ -258,7 +232,6 @@ window.loadCategories = function (sectionId) {
         //         </div>
         //     `);
 
-
         //     $('#categoriesSection').append(`
         //   <div class="col-md-4 mb-4">
         //     <div class="card category-card" data-bs-toggle="tooltip" data-bs-placement="auto" title="${description}" data-category-id="${categoryId}">
@@ -274,57 +247,72 @@ window.loadCategories = function (sectionId) {
         //   </div>
         // `);
 
+        // بيانات الـ tooltip بشكل آمن
+        const tooltipTitle =
+          category.toolTip?.title?.[lang] || category.toolTip?.title?.es || "";
 
+        const tooltipDesc =
+          category.toolTip?.description?.[lang] ||
+          category.toolTip?.description?.es ||
+          "";
 
-        // إنشاء الكروت مع بيانات الـ toolTip
-        $('#categoriesSection').append(`
-  <div class="col-md-3 mb-4">
-    <div class="card category-card"
-         data-category-id="${categoryId}" 
-         data-section-id="${sectionId}"
-         data-tooltip-title="${category.toolTip?.title[lang] || category.toolTip?.title['es'] || ''}"
-         data-tooltip-desc="${category.toolTip?.description[lang] || category.toolTip?.description['es'] || ''}"
-         data-tooltip-img="${category.toolTip?.imageUrl || ''}">
-      <img src="${category.imageUrl}" alt="${title}">
-      <div class="card-body p-0">
-        <strong>${title}</strong>
-        <small>${description}</small>
-      </div>
-      <div class="mt-2">
-        <a href="subcategory.html?sectionId=${sectionId}&categoryId=${categoryId}">
-          More info <i class="bi bi-arrow-right"></i>
-        </a>
-      </div>
+        const tooltipImg = category.toolTip?.imageUrl || "";
+
+        // إنشاء الكروت
+        $("#categoriesSection").append(`
+    <div class="col-md-3 mb-4">
+        <div class="card category-card"
+             data-category-id="${categoryId}"
+             data-section-id="${sectionId}"
+             data-tooltip-title="${tooltipTitle}"
+             data-tooltip-desc="${tooltipDesc}"
+             data-tooltip-img="${tooltipImg}">
+             
+            <img src="${category.imageUrl}" alt="${title}">
+
+            <div class="card-body p-0">
+                <strong>${title}</strong>
+                <small>${description}</small>
+            </div>
+
+            <div class="mt-2">
+                <a href="subcategory.html?sectionId=${sectionId}&categoryId=${categoryId}">
+                    More info <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
     </div>
-  </div>
 `);
 
         let tooltipTimeout = null;
         let isHoveringTooltip = false;
 
-        $(document).on('mouseenter', '.category-card', function (e) {
+        $(document).on("mouseenter", ".category-card", function (e) {
           clearTimeout(tooltipTimeout);
 
           const $card = $(this);
-          const title = $card.data('tooltip-title');
-          const desc = $card.data('tooltip-desc');
-          const img = $card.data('tooltip-img');
-          const sectionId = $card.data('section-id');
-          const categoryId = $card.data('category-id');
+          const title = $card.data("tooltip-title");
+          const desc = $card.data("tooltip-desc");
+          const img = $card.data("tooltip-img");
+          const sectionId = $card.data("section-id");
+          const categoryId = $card.data("category-id");
 
-          const tooltip = $('#customTooltip');
+          const tooltip = $("#customTooltip");
 
-          $('#tooltipImage').attr('src', img || '');
-          $('#tooltipTitle').text(title || '');
-          $('#tooltipDesc').text(desc || '');
+          $("#tooltipImage").attr("src", img || "");
+          $("#tooltipTitle").text(title || "");
+          $("#tooltipDesc").text(desc || "");
 
           tooltip
-            .data('link', `subcategory.html?sectionId=${sectionId}&categoryId=${categoryId}`)
-            .removeClass('visible arrow-top arrow-bottom')
+            .data(
+              "link",
+              `subcategory.html?sectionId=${sectionId}&categoryId=${categoryId}`,
+            )
+            .removeClass("visible arrow-top arrow-bottom")
             .show();
 
           // استخدم pageX و pageY
-          let top = e.pageY + 2;  // 2px فقط لتفادي تداخل المؤشر مع الديف
+          let top = e.pageY + 2; // 2px فقط لتفادي تداخل المؤشر مع الديف
           let left = e.pageX + 2;
 
           const tooltipWidth = tooltip.outerWidth();
@@ -333,12 +321,12 @@ window.loadCategories = function (sectionId) {
           const windowHeight = $(window).height();
           const scrollTop = $(window).scrollTop();
 
-          let positionClass = 'arrow-top';
+          let positionClass = "arrow-top";
 
           // فقط إذا خرج عن الأسفل
           if (top + tooltipHeight - scrollTop > windowHeight) {
             top = e.pageY - tooltipHeight - 2;
-            positionClass = 'arrow-bottom';
+            positionClass = "arrow-bottom";
           }
 
           // فقط إذا خرج عن اليمين
@@ -348,75 +336,67 @@ window.loadCategories = function (sectionId) {
 
           tooltip.css({ top, left }).addClass(positionClass);
 
-          setTimeout(() => tooltip.addClass('visible'), 10);
+          setTimeout(() => tooltip.addClass("visible"), 10);
 
           // flex direction حسب أبعاد الصورة
-          const imgElement = document.getElementById('tooltipImage');
+          const imgElement = document.getElementById("tooltipImage");
           imgElement.onload = function () {
-            const tooltipInner = tooltip.find('.tooltip-inner');
+            const tooltipInner = tooltip.find(".tooltip-inner");
             if (imgElement.naturalHeight > imgElement.naturalWidth) {
-              tooltipInner.css('flex-direction', 'row');
-              $(imgElement).css('order', 1);
+              tooltipInner.css("flex-direction", "row");
+              $(imgElement).css("order", 1);
             } else {
-              tooltipInner.css('flex-direction', 'column');
-              $(imgElement).css('order', 0);
+              tooltipInner.css("flex-direction", "column");
+              $(imgElement).css("order", 0);
             }
           };
         });
 
-
-        $(document).on('mouseleave', '.category-card', function () {
+        $(document).on("mouseleave", ".category-card", function () {
           tooltipTimeout = setTimeout(() => {
             if (!isHoveringTooltip) {
-              $('#customTooltip').removeClass('visible');
-              setTimeout(() => $('#customTooltip').hide(), 200);
+              $("#customTooltip").removeClass("visible");
+              setTimeout(() => $("#customTooltip").hide(), 200);
             }
           }, 200);
         });
 
-        $('#customTooltip').on('mouseenter', function () {
+        $("#customTooltip").on("mouseenter", function () {
           isHoveringTooltip = true;
           clearTimeout(tooltipTimeout);
         });
 
-        $('#customTooltip').on('mouseleave', function () {
+        $("#customTooltip").on("mouseleave", function () {
           isHoveringTooltip = false;
-          $(this).removeClass('visible');
+          $(this).removeClass("visible");
           setTimeout(() => $(this).hide(), 200);
         });
 
-        $('#customTooltip').on('click', function () {
-          const link = $(this).data('link');
+        $("#customTooltip").on("click", function () {
+          const link = $(this).data("link");
           if (link) window.location.href = link;
         });
-
 
         $(".category-card").click(function () {
           const categoryId = $(this).data("category-id");
           setTimeout(() => {
-
             window.location.href = `subcategory.html?sectionId=${sectionId}&categoryId=${categoryId}`;
           }, 20);
         });
-
       });
 
       // تفعيل الـ Tooltip من Bootstrap
       // const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
       // tooltipTriggerList.map(el => new bootstrap.Tooltip(el))
-
-
     },
     error: function (err) {
       console.error("Error fetching categories:", err);
-    }
+    },
   });
 };
 
-
 // تحميل الفئات الفرعية
 window.loadSubcategories = function (sectionId, categoryId) {
-
   $.ajax({
     url: `${API_BASE_URL}/section/${sectionId}/category/${categoryId}/subcategories`,
     method: "GET",
@@ -447,7 +427,7 @@ window.loadSubcategories = function (sectionId, categoryId) {
       `);
       });
 
-      subcategoriesContainer.append('</div>'); // إغلاق الحاوية بعد إضافة كل الكروت
+      subcategoriesContainer.append("</div>"); // إغلاق الحاوية بعد إضافة كل الكروت
 
       // إظهار الفئات الفرعية تحت الفئة المختارة
       subcategoriesContainer.slideDown();
@@ -468,23 +448,22 @@ window.loadSubcategories = function (sectionId, categoryId) {
   });
 };
 
-
 function loadSubcategoryDescription(sectionId, categoryId, subcategoryId) {
-  const lang = 'en'; // أو يمكنك تحديد اللغة من الـ query أو من مكان آخر
+  const lang = "en"; // أو يمكنك تحديد اللغة من الـ query أو من مكان آخر
 
   $.ajax({
     url: `${API_BASE_URL}/section/${sectionId}/category/${categoryId}/subcategory/${subcategoryId}`,
-    method: 'GET',
+    method: "GET",
     success: function (subcategory) {
-      $('#sectionsSection').empty(); // Clear the current content
+      $("#sectionsSection").empty(); // Clear the current content
 
       // استخدام اللغة المحددة في العنوان والوصف والمحتوى
-      const title = subcategory.title[lang] || subcategory.title['es'];
+      const title = subcategory.title[lang] || subcategory.title["es"];
       // const description = subcategory.description[lang] || subcategory.description['es'];
-      const content = subcategory.content[lang] || subcategory.content['es'];
+      const content = subcategory.content[lang] || subcategory.content["es"];
 
       // إضافة البيانات إلى الـ HTML
-      $('#sectionsSection').append(`
+      $("#sectionsSection").append(`
           <div class="card">
               <div class="card-body">
                   <h5 class="card-title">${title}</h5>
@@ -496,43 +475,34 @@ function loadSubcategoryDescription(sectionId, categoryId, subcategoryId) {
     },
     error: function (err) {
       console.error("Error fetching subcategory description:", err);
-    }
+    },
   });
 }
 
-
-
 function loadSubcategoryDetails(sectionId, categoryId) {
-  const lang = 'en';
+  const lang = "en";
 
   $.ajax({
     url: `${API_BASE_URL}/newsection/section/${sectionId}/category/${categoryId}`,
-    method: 'GET',
+    method: "GET",
     success: function (data) {
-
-      let htmlContent = data.content[lang] || data.content['es'];
+      let htmlContent = data.content[lang] || data.content["es"];
 
       // let headerTitle = data.title[lang] || data.title['es'];
 
       // let headerTitle = localStorage.getItem("sectionTitle") || data.title[lang] || data.title['es'];
       // let headerDescription = localStorage.getItem("sectionDescription") || data.description[lang] || data.description['es'];
 
-
       // document.getElementById("headerTitle").innerHTML = headerTitle;
       // document.getElementById("headerDescription").innerHTML = headerDescription;
-
-
 
       // document.getElementById("headerTitle").innerHTML = data.title;
 
       // document.getElementById("contentContainer").innerHTML = htmlContent;
-
-
-
     },
     error: function (err) {
       console.error("Error fetching category details:", err);
-    }
+    },
   });
 }
 
@@ -545,15 +515,15 @@ function fetchSections() {
     },
     error: function (err) {
       console.error("Error fetching sections:", err);
-    }
+    },
   });
 }
 
 function renderSections(sections) {
   if (sections.length === 0) return;
   const lang = localStorage.getItem("selectedLang") || "es";
-  sections.forEach(section => {
-    const title = section.title[lang] || section.title['es'];
+  sections.forEach((section) => {
+    const title = section.title[lang] || section.title["es"];
     // const description = section.description[lang] || section.description['es'];
     const imageUrl = section.imageUrl;
     $("#sectionsSection").append(`
@@ -585,12 +555,10 @@ function renderSections(sections) {
 //     if (welcomeText === 'user_welcome') {
 //       document.getElementById('userName').textContent = `${welcomeText}, ${userName}`;
 
-
 //     } else {
 //       document.getElementById('userName').textContent = `Welcome, ${userName}`;
 
 //     }
-
 
 //     document.getElementById('dashboardLink').style.display = 'inline-block';
 //     document.getElementById('logoutBtn').style.display = 'inline-block';
@@ -616,11 +584,10 @@ function renderSections(sections) {
 // });
 
 function runApp() {
-
   // document.addEventListener("DOMContentLoaded", function () {
 
   // Check if user data exists in localStorage
-  const userName = localStorage.getItem('userName');
+  const userName = localStorage.getItem("userName");
 
   if (userName) {
     // Display user name and dashboard link
@@ -632,25 +599,25 @@ function runApp() {
     //   document.getElementById('userName').textContent = `Welcome, ${userName}`;
     // }
 
-    document.getElementById('dashboardLink').style.display = 'inline-block';
-    document.getElementById('logoutBtn').style.display = 'inline-block';
+    document.getElementById("dashboardLink").style.display = "inline-block";
+    document.getElementById("logoutBtn").style.display = "inline-block";
 
     // Hide login and signup buttons
-    document.getElementById('loginLink').style.display = 'none';
-    document.getElementById('signupLink').style.display = 'none';
+    document.getElementById("loginLink").style.display = "none";
+    document.getElementById("signupLink").style.display = "none";
   }
 
   // Handle logout
-  const logoutBtn = document.getElementById('logoutBtn');
+  const logoutBtn = document.getElementById("logoutBtn");
   if (logoutBtn) {
-    logoutBtn.addEventListener('click', function () {
+    logoutBtn.addEventListener("click", function () {
       // Clear user data from localStorage
-      localStorage.removeItem('userName');
-      localStorage.removeItem('userEmail');
-      localStorage.removeItem('token');
+      localStorage.removeItem("userName");
+      localStorage.removeItem("userEmail");
+      localStorage.removeItem("token");
 
       // Redirect to homepage or login page
-      window.location.href = 'index';
+      window.location.href = "index";
     });
   }
   // });
