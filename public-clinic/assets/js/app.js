@@ -109,7 +109,7 @@ $(document).ready(function () {
           //const i18nData = section.i18next;
           // إضافة قسم جديد
           const sectionItem = `
-                  <li class="nav-item dropdown" id="${section.page}">
+                  <li class="nav-item dropdown" style="margin-bottom:0px !important" id="${section.page}">
                       <a class="section-link nav-link text-white menu-link" href="#" data-page-title="${section.title}" data-page-description="${section.description}" data-page-name="${section.page}" data-section-id="${section.sectionId}" role="button" id="${section.sectionId}" aria-expanded="false" data-i18n="${section.i18next}">
                           ${sectionTitle}
                       </a>
