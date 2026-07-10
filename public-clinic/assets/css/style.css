@@ -771,3 +771,6 @@ img.card-img-top {
 .carousel-item .btn:hover {
   background: #2c682f;
 }
+#headerDescription {
+  margin-bottom: 0px !important;
+}
