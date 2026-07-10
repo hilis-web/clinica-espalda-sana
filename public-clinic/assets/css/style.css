@@ -774,3 +774,6 @@ img.card-img-top {
 #headerDescription {
   margin-bottom: 0px !important;
 }
+#categoriesHeader {
+  top: 156px;
+}
