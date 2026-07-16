@@ -319,6 +319,7 @@ app.get("/getAvailableTimes/:date", async (req, res) => {
 // API to generate appointment slots from today until the end of the current year
 app.post("/addYearAppointments", async (req, res) => {
   try {
+    console.log("******** VERSION 2 - OPTIMIZED ROUTE LOADED ********");
     // Today's date (UTC)
     const today = new Date();
     today.setUTCHours(0, 0, 0, 0);
