@@ -264,7 +264,7 @@ app.get("/getAvailableTimes/:date", async (req, res) => {
 
 app.post("/addYearAppointments", async (req, res) => {
   try {
-    const year = 2025;
+    const year = 2026;
     const today = new Date(); // تاريخ اليوم
     today.setUTCHours(0, 0, 0, 0); // إعادة ضبط الوقت إلى بداية اليوم
 
