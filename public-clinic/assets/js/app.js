@@ -202,52 +202,26 @@ window.loadCategories = function (sectionId) {
   $.ajax({
     url: `${API_BASE_URL}/newsection/section/${sectionId}/categories`,
     method: "GET",
+
     success: function (categories) {
       $("#categoriesSection").empty();
 
       console.log("####categories####", categories);
 
-      categories.forEach((category) => {
-        console.log("%%%%category%%%%", category);
+      /* ========================================
+         CREATE CATEGORY CARDS
+      ======================================== */
 
-        const title = category.title[lang] || category.title["es"];
+      categories.forEach((category) => {
+        const title = category.title?.[lang] || category.title?.["es"] || "";
+
         const description =
-          category.description[lang] || category.description["es"];
-        const content = category.content[lang] || category.content["es"];
+          category.description?.[lang] || category.description?.["es"] || "";
+
         const categoryId = category.categoryId;
 
-        // $('#categoriesSection').append(`
-        //         <div class="col-md-4 mb-4">
-        //             <div class="card category-card" style="height:unset !important" data-category-id="${categoryId}">
-        //                 <img src="${category.imageUrl}" class="card-img-top" alt="${title}" style="">
-        //                 <div class="card-body">
-        //                   <strong class="card-title">${title}</strong> <br />
-        //                   <small class="">${description}</small>
-        //                 </div>
-        //                 <div class="card-body">
-        //                   <a href="javascript:void(0);" class="btn btn-primary">Read More</a>
-        //                 </div>
-        //             </div>
-        //             <div class="row subcategories-container" id="subcategories-${categoryId}" style="display: none;"></div>
-        //         </div>
-        //     `);
+        /* TOOLTIP DATA */
 
-        //     $('#categoriesSection').append(`
-        //   <div class="col-md-4 mb-4">
-        //     <div class="card category-card" data-bs-toggle="tooltip" data-bs-placement="auto" title="${description}" data-category-id="${categoryId}">
-        //       <img src="${category.imageUrl}" alt="${title}">
-        //       <div class="card-body p-0">
-        //         <strong>${title}</strong>
-        //         <small>${description}</small>
-        //       </div>
-        //       <div class="mt-2">
-        //         <a href="subcategory.html?sectionId=${sectionId}&categoryId=${categoryId}">More info <i class="bi bi-arrow-right"></i></a>
-        //         </div>
-        //     </div>
-        //   </div>
-        // `);
-
-        // بيانات الـ tooltip بشكل آمن
         const tooltipTitle =
           category.toolTip?.title?.[lang] || category.toolTip?.title?.es || "";
 
@@ -258,137 +232,299 @@ window.loadCategories = function (sectionId) {
 
         const tooltipImg = category.toolTip?.imageUrl || "";
 
-        // إنشاء الكروت
+        /* CREATE CARD */
+
         $("#categoriesSection").append(`
-    <div class="col-md-3 mb-4">
-        <div class="card category-card"
-             data-category-id="${categoryId}"
-             data-section-id="${sectionId}"
-             data-tooltip-title="${tooltipTitle}"
-             data-tooltip-desc="${tooltipDesc}"
-             data-tooltip-img="${tooltipImg}">
-             
-            <img src="${category.imageUrl}" alt="${title}">
+          <div class="col-md-3 mb-4">
 
-            <div class="card-body p-0">
-                <strong>${title}</strong>
-                <small>${description}</small>
-            </div>
+            <div class="card category-card"
+                 data-category-id="${categoryId}"
+                 data-section-id="${sectionId}"
+                 data-tooltip-title="${tooltipTitle}"
+                 data-tooltip-desc="${tooltipDesc}"
+                 data-tooltip-img="${tooltipImg}">
 
-            <div class="mt-2">
+              <img
+                src="${category.imageUrl}"
+                alt="${title}"
+              >
+
+              <div class="card-body p-0">
+
+                <strong class="category-title">
+                  ${title}
+                </strong>
+
+                <small class="category-description">
+                  ${description}
+                </small>
+
+              </div>
+
+              <div class="mt-2 category-footer">
+
                 <a href="subcategory.html?sectionId=${sectionId}&categoryId=${categoryId}">
-                    More info <i class="bi bi-arrow-right"></i>
+                  More info
+                  <i class="bi bi-arrow-right"></i>
                 </a>
+
+              </div>
+
             </div>
-        </div>
-    </div>
-`);
 
-        let tooltipTimeout = null;
-        let isHoveringTooltip = false;
+          </div>
+        `);
+      });
 
-        $(document).on("mouseenter", ".category-card", function (e) {
+      /* ========================================
+         TOOLTIP SETTINGS
+      ======================================== */
+
+      let tooltipTimeout = null;
+      let hideTooltipTimeout = null;
+      let isHoveringTooltip = false;
+
+      const tooltip = $("#customTooltip");
+
+      /* ========================================
+         REMOVE OLD EVENTS
+      ======================================== */
+
+      $(document).off("mouseenter.categoryTooltip", ".category-card");
+
+      $(document).off("mouseleave.categoryTooltip", ".category-card");
+
+      tooltip.off(".categoryTooltip");
+
+      /* ========================================
+         CARD MOUSE ENTER
+      ======================================== */
+
+      $(document).on(
+        "mouseenter.categoryTooltip",
+        ".category-card",
+
+        function () {
           clearTimeout(tooltipTimeout);
+          clearTimeout(hideTooltipTimeout);
 
           const $card = $(this);
+
           const title = $card.data("tooltip-title");
+
           const desc = $card.data("tooltip-desc");
+
           const img = $card.data("tooltip-img");
-          const sectionId = $card.data("section-id");
+
+          const cardSectionId = $card.data("section-id");
+
           const categoryId = $card.data("category-id");
 
-          const tooltip = $("#customTooltip");
+          /* UPDATE TOOLTIP CONTENT */
 
           $("#tooltipImage").attr("src", img || "");
+
           $("#tooltipTitle").text(title || "");
+
           $("#tooltipDesc").text(desc || "");
+
+          /* UPDATE TOOLTIP LINK */
 
           tooltip
             .data(
               "link",
-              `subcategory.html?sectionId=${sectionId}&categoryId=${categoryId}`,
+              `subcategory.html?sectionId=${cardSectionId}&categoryId=${categoryId}`,
             )
             .removeClass("visible arrow-top arrow-bottom")
             .show();
 
-          // استخدم pageX و pageY
-          let top = e.pageY + 2; // 2px فقط لتفادي تداخل المؤشر مع الديف
-          let left = e.pageX + 2;
+          /* ========================================
+             GET CARD POSITION
+          ======================================== */
+
+          const cardRect = this.getBoundingClientRect();
+
+          /* GET TOOLTIP DIMENSIONS */
 
           const tooltipWidth = tooltip.outerWidth();
+
           const tooltipHeight = tooltip.outerHeight();
-          const windowWidth = $(window).width();
-          const windowHeight = $(window).height();
-          const scrollTop = $(window).scrollTop();
 
-          let positionClass = "arrow-top";
+          const gap = 0;
 
-          // فقط إذا خرج عن الأسفل
-          if (top + tooltipHeight - scrollTop > windowHeight) {
-            top = e.pageY - tooltipHeight - 2;
-            positionClass = "arrow-bottom";
+          /* ========================================
+             DEFAULT POSITION
+             RIGHT SIDE OF CARD
+          ======================================== */
+
+          let left = cardRect.right + gap;
+
+          let top = cardRect.top + cardRect.height / 2 - tooltipHeight / 2;
+
+          /* ========================================
+             CHECK RIGHT SIDE
+          ======================================== */
+
+          if (left + tooltipWidth > window.innerWidth - gap) {
+            left = cardRect.left - tooltipWidth - gap;
           }
 
-          // فقط إذا خرج عن اليمين
-          if (left + tooltipWidth > windowWidth) {
-            left = e.pageX - tooltipWidth - 2;
+          /* ========================================
+             CHECK LEFT SIDE
+          ======================================== */
+
+          if (left < gap) {
+            left = gap;
           }
 
-          tooltip.css({ top, left }).addClass(positionClass);
+          /* ========================================
+             CHECK TOP
+          ======================================== */
 
-          setTimeout(() => tooltip.addClass("visible"), 10);
+          if (top < gap) {
+            top = gap;
+          }
 
-          // flex direction حسب أبعاد الصورة
+          /* ========================================
+             CHECK BOTTOM
+          ======================================== */
+
+          if (top + tooltipHeight > window.innerHeight - gap) {
+            top = window.innerHeight - tooltipHeight - gap;
+          }
+
+          /* ========================================
+             APPLY POSITION
+          ======================================== */
+
+          tooltip.css({
+            position: "fixed",
+            top: `${top}px`,
+            left: `${left}px`,
+          });
+
+          /* SHOW TOOLTIP */
+
+          setTimeout(() => {
+            tooltip.addClass("visible");
+          }, 10);
+
+          /* ========================================
+             IMAGE FLEX DIRECTION
+          ======================================== */
+
           const imgElement = document.getElementById("tooltipImage");
-          imgElement.onload = function () {
-            const tooltipInner = tooltip.find(".tooltip-inner");
-            if (imgElement.naturalHeight > imgElement.naturalWidth) {
-              tooltipInner.css("flex-direction", "row");
-              $(imgElement).css("order", 1);
-            } else {
-              tooltipInner.css("flex-direction", "column");
-              $(imgElement).css("order", 0);
-            }
-          };
-        });
 
-        $(document).on("mouseleave", ".category-card", function () {
+          if (imgElement) {
+            imgElement.onload = function () {
+              const tooltipInner = tooltip.find(".tooltip-inner");
+
+              if (imgElement.naturalHeight > imgElement.naturalWidth) {
+                tooltipInner.css("flex-direction", "row");
+
+                $(imgElement).css("order", 1);
+              } else {
+                tooltipInner.css("flex-direction", "column");
+
+                $(imgElement).css("order", 0);
+              }
+            };
+          }
+        },
+      );
+
+      /* ========================================
+         CARD MOUSE LEAVE
+      ======================================== */
+
+      $(document).on(
+        "mouseleave.categoryTooltip",
+        ".category-card",
+
+        function () {
           tooltipTimeout = setTimeout(() => {
             if (!isHoveringTooltip) {
-              $("#customTooltip").removeClass("visible");
-              setTimeout(() => $("#customTooltip").hide(), 200);
+              tooltip.removeClass("visible");
+
+              hideTooltipTimeout = setTimeout(() => {
+                tooltip.hide();
+              }, 200);
             }
           }, 200);
-        });
+        },
+      );
 
-        $("#customTooltip").on("mouseenter", function () {
+      /* ========================================
+         TOOLTIP MOUSE ENTER
+      ======================================== */
+
+      tooltip.on(
+        "mouseenter.categoryTooltip",
+
+        function () {
           isHoveringTooltip = true;
+
           clearTimeout(tooltipTimeout);
-        });
 
-        $("#customTooltip").on("mouseleave", function () {
+          clearTimeout(hideTooltipTimeout);
+        },
+      );
+
+      /* ========================================
+         TOOLTIP MOUSE LEAVE
+      ======================================== */
+
+      tooltip.on(
+        "mouseleave.categoryTooltip",
+
+        function () {
           isHoveringTooltip = false;
+
           $(this).removeClass("visible");
-          setTimeout(() => $(this).hide(), 200);
-        });
 
-        $("#customTooltip").on("click", function () {
+          hideTooltipTimeout = setTimeout(() => {
+            $(this).hide();
+          }, 200);
+        },
+      );
+
+      /* ========================================
+         TOOLTIP CLICK
+      ======================================== */
+
+      tooltip.on(
+        "click.categoryTooltip",
+
+        function () {
           const link = $(this).data("link");
-          if (link) window.location.href = link;
-        });
 
-        $(".category-card").click(function () {
-          const categoryId = $(this).data("category-id");
-          setTimeout(() => {
+          if (link) {
+            window.location.href = link;
+          }
+        },
+      );
+
+      /* ========================================
+         CARD CLICK
+      ======================================== */
+
+      $(".category-card")
+        .off("click.categoryTooltip")
+        .on(
+          "click.categoryTooltip",
+
+          function () {
+            const categoryId = $(this).data("category-id");
+
             window.location.href = `subcategory.html?sectionId=${sectionId}&categoryId=${categoryId}`;
-          }, 20);
-        });
-      });
-
-      // تفعيل الـ Tooltip من Bootstrap
-      // const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-      // tooltipTriggerList.map(el => new bootstrap.Tooltip(el))
+          },
+        );
     },
+
+    /* ========================================
+       AJAX ERROR
+    ======================================== */
+
     error: function (err) {
       console.error("Error fetching categories:", err);
     },

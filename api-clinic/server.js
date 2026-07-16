@@ -85,7 +85,7 @@ app.use(
       collectionName: "sessions",
     }),
     cookie: { secure: false, maxAge: 1000 * 60 * 60 * 24 }, // 1-day session
-  })
+  }),
 );
 
 // app.use(session({
@@ -106,7 +106,7 @@ app.get(
   "/api/auth/google",
   passport.authenticate("google", {
     scope: ["profile", "email"],
-  })
+  }),
 );
 
 // Google callback route settings
@@ -118,7 +118,7 @@ app.get(
   (req, res) => {
     // Successful registration or login
     res.redirect("/"); // You can redirect the user to a specific page after success
-  }
+  },
 );
 
 // Microsoft login route settings
@@ -126,7 +126,7 @@ app.get(
   "/api/auth/microsoft",
   passport.authenticate("microsoft", {
     scope: ["user.read", "mail.read"],
-  })
+  }),
 );
 
 // Microsoft callback route settings
@@ -138,7 +138,7 @@ app.get(
   (req, res) => {
     // Successful registration or login
     res.redirect("/profile"); // You can redirect the user to a specific page after success
-  }
+  },
 );
 
 // Profile page
@@ -189,15 +189,15 @@ app.get("/getAllPatients", async (req, res) => {
 app.get("/getAllAppointments", async (req, res) => {
   try {
     const appointments = await Appointment.find();
-    if (appointments.length === 0) {
-      return res.status(404).json({ message: "No appointments found." });
-    }
+
+    // Always return the appointments array (empty or not)
     res.status(200).json(appointments);
   } catch (error) {
     console.error("Error fetching appointments:", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while fetching appointments." });
+
+    res.status(500).json({
+      error: "An error occurred while fetching appointments.",
+    });
   }
 });
 
@@ -250,7 +250,7 @@ app.get("/getAvailableTimes/:date", async (req, res) => {
       "22:00:00",
     ];
     const availableTimes = allTimes.filter(
-      (time) => !bookedTimes.includes(time)
+      (time) => !bookedTimes.includes(time),
     );
 
     res.status(200).json({ availableTimes });
@@ -803,7 +803,7 @@ app.post("/bookAppointment", async (req, res) => {
 
     // Populate the patient details into the response
     const populatedAppointment = await Appointment.findById(
-      appointment._id
+      appointment._id,
     ).populate("patient_id", "patient_name");
 
     res.status(200).json({
@@ -1000,7 +1000,7 @@ app.get(
 
       // Find the category using ObjectId
       const category = section.categories.find(
-        (cat) => cat.categoryId.toString() === req.params.categoryId
+        (cat) => cat.categoryId.toString() === req.params.categoryId,
       );
       console.log("Category Found:", category);
 
@@ -1015,7 +1015,7 @@ app.get(
         .status(500)
         .json({ error: "An error occurred while fetching subcategories" });
     }
-  }
+  },
 );
 
 app.get(
@@ -1030,14 +1030,14 @@ app.get(
 
       // Find the category using categoryId
       const category = section.categories.find(
-        (cat) => cat.categoryId.toString() === categoryId
+        (cat) => cat.categoryId.toString() === categoryId,
       );
       if (!category)
         return res.status(404).json({ error: "Category not found" });
 
       // Find the subcategory using subcategoryId
       const subcategory = category.subcategories.find(
-        (sub) => sub.subcategoryId.toString() === subcategoryId
+        (sub) => sub.subcategoryId.toString() === subcategoryId,
       );
       if (!subcategory)
         return res.status(404).json({ error: "Subcategory not found" });
@@ -1049,7 +1049,7 @@ app.get(
         .status(500)
         .json({ error: "An error occurred while fetching the subcategory" });
     }
-  }
+  },
 );
 
 //COOKIES

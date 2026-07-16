@@ -193,6 +193,8 @@
           url: `${API_BASE_URL}/newsection/section/${sectionId}/category/${categoryId}`,
           method: "GET",
           success: function (data) {
+            console.log("....data", data);
+            let subCategoryTitle = data.title[lang] || data.title["es"];
             let htmlContent = data.content[lang] || data.content["es"];
 
             // let headerTitle= data.title[lang] || data.title['es'];
@@ -202,6 +204,8 @@
             // document.getElementById("headerTitle").innerHTML = headerTitle;
 
             document.getElementById("contentContainer").innerHTML = htmlContent;
+            document.getElementById("headerDescription").innerHTML =
+              subCategoryTitle;
           },
           error: function (err) {
             console.error("Error fetching category details:", err);
