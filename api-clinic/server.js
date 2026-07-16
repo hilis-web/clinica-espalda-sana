@@ -262,58 +262,177 @@ app.get("/getAvailableTimes/:date", async (req, res) => {
   }
 });
 
+// app.post("/addYearAppointments", async (req, res) => {
+//   try {
+//     const year = 2026;
+//     const today = new Date(); // تاريخ اليوم
+//     today.setUTCHours(0, 0, 0, 0); // إعادة ضبط الوقت إلى بداية اليوم
+
+//     const endDate = new Date(`${year}-12-31T23:59:59Z`);
+
+//     const appointments = []; // تخزين جميع المواعيد قبل إدخالها في MongoDB
+
+//     for (
+//       let date = new Date(today);
+//       date <= endDate;
+//       date.setDate(date.getDate() + 1)
+//     ) {
+//       for (let hour = 9; hour < 18; hour++) {
+//         // من 9 صباحًا إلى 5:30 مساءً
+//         for (let minute of [0, 30]) {
+//           // كل نصف ساعة
+//           const appointmentTime = new Date(date);
+//           appointmentTime.setUTCHours(hour, minute, 0, 0); // ضبط التوقيت في UTC
+
+//           // إنشاء كائن Appointment جديد
+//           const appointment = new Appointment({
+//             appointment_id: `${
+//               appointmentTime.toISOString().split("T")[0]
+//             }-${hour}:${minute === 0 ? "00" : "30"}`,
+//             date: appointmentTime.toISOString().split("T")[0],
+//             time: appointmentTime.toISOString().split("T")[1].split(".")[0],
+//             status: "available",
+//             patient_id: null,
+//             doctor_id: "dr123",
+//           });
+
+//           appointments.push(appointment);
+//         }
+//       }
+//     }
+
+//     // إدخال جميع المواعيد إلى MongoDB دفعة واحدة
+//     await Appointment.insertMany(appointments);
+
+//     res.status(200).json({
+//       message: `Appointments from ${
+//         today.toISOString().split("T")[0]
+//       } to 2025 added successfully!`,
+//     });
+//   } catch (error) {
+//     console.error("Error adding appointments:", error);
+//     res
+//       .status(500)
+//       .json({ error: "An error occurred while adding appointments" });
+//   }
+// });
+// API to generate appointment slots from today until the end of the current year
 app.post("/addYearAppointments", async (req, res) => {
   try {
-    const year = 2026;
-    const today = new Date(); // تاريخ اليوم
-    today.setUTCHours(0, 0, 0, 0); // إعادة ضبط الوقت إلى بداية اليوم
+    // Today's date (UTC)
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
 
-    const endDate = new Date(`${year}-12-31T23:59:59Z`);
+    // Current year (dynamic)
+    const currentYear = today.getUTCFullYear();
 
-    const appointments = []; // تخزين جميع المواعيد قبل إدخالها في MongoDB
+    // End of current year
+    const endDate = new Date(`${currentYear}-12-31T23:59:59Z`);
 
+    // Load all existing appointment IDs once
+    const existingAppointments = await Appointment.find(
+      {},
+      { appointment_id: 1, _id: 0 },
+    );
+
+    // Convert IDs into a Set for fast lookup
+    const existingIds = new Set(
+      existingAppointments.map((appointment) => appointment.appointment_id),
+    );
+
+    const appointmentsToInsert = [];
+    let skipped = 0;
+
+    // Generate appointments
     for (
       let date = new Date(today);
       date <= endDate;
-      date.setDate(date.getDate() + 1)
+      date.setUTCDate(date.getUTCDate() + 1)
     ) {
       for (let hour = 9; hour < 18; hour++) {
-        // من 9 صباحًا إلى 5:30 مساءً
-        for (let minute of [0, 30]) {
-          // كل نصف ساعة
+        for (const minute of [0, 30]) {
           const appointmentTime = new Date(date);
-          appointmentTime.setUTCHours(hour, minute, 0, 0); // ضبط التوقيت في UTC
+          appointmentTime.setUTCHours(hour, minute, 0, 0);
 
-          // إنشاء كائن Appointment جديد
-          const appointment = new Appointment({
-            appointment_id: `${
-              appointmentTime.toISOString().split("T")[0]
-            }-${hour}:${minute === 0 ? "00" : "30"}`,
-            date: appointmentTime.toISOString().split("T")[0],
-            time: appointmentTime.toISOString().split("T")[1].split(".")[0],
+          const dateString = appointmentTime.toISOString().split("T")[0];
+          const timeString = appointmentTime
+            .toISOString()
+            .split("T")[1]
+            .split(".")[0];
+
+          const appointmentId = `${dateString}-${hour}:${
+            minute === 0 ? "00" : "30"
+          }`;
+
+          // Skip duplicate appointments
+          if (existingIds.has(appointmentId)) {
+            skipped++;
+            continue;
+          }
+
+          appointmentsToInsert.push({
+            appointment_id: appointmentId,
+            date: dateString,
+            time: timeString,
             status: "available",
             patient_id: null,
             doctor_id: "dr123",
           });
 
-          appointments.push(appointment);
+          // Add to Set to prevent duplicates during this request
+          existingIds.add(appointmentId);
         }
       }
     }
 
-    // إدخال جميع المواعيد إلى MongoDB دفعة واحدة
-    await Appointment.insertMany(appointments);
+    // Insert only new appointments
+    let insertedAppointments = [];
 
+    if (appointmentsToInsert.length > 0) {
+      insertedAppointments = await Appointment.insertMany(appointmentsToInsert);
+    }
+
+    // ===== Console the added appointments =====
+    console.log("\n========== NEW APPOINTMENTS ADDED ==========\n");
+
+    if (insertedAppointments.length > 0) {
+      console.table(
+        insertedAppointments.map((appointment) => ({
+          AppointmentID: appointment.appointment_id,
+          Date: appointment.date,
+          Time: appointment.time,
+          Status: appointment.status,
+          Doctor: appointment.doctor_id,
+        })),
+      );
+    } else {
+      console.log(
+        "No new appointments were added. All appointments already exist.",
+      );
+    }
+
+    console.log("\n============================================\n");
+
+    // Send response
     res.status(200).json({
-      message: `Appointments from ${
+      success: true,
+      message: `${insertedAppointments.length} appointment(s) added successfully from ${
         today.toISOString().split("T")[0]
-      } to 2025 added successfully!`,
+      } to ${endDate.toISOString().split("T")[0]}.`,
+      startDate: today.toISOString().split("T")[0],
+      endDate: endDate.toISOString().split("T")[0],
+      added: insertedAppointments.length,
+      skipped,
+      totalExistingAppointments: existingIds.size,
+      appointments: insertedAppointments,
     });
   } catch (error) {
     console.error("Error adding appointments:", error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while adding appointments" });
+
+    res.status(500).json({
+      success: false,
+      error: "An error occurred while adding appointments.",
+    });
   }
 });
 
