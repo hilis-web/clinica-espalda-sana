@@ -87,7 +87,7 @@ $(document).ready(function () {
   const clinicDomain = "AaronClinic";
   // const clinicDomain = "user-api-server.onrender.com";
 
-  fetchClinicConfig(clinicDomain);
+  //fetchClinicConfig(clinicDomain);
   initializeI18n();
   setupEventListeners();
 });

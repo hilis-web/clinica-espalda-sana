@@ -76,175 +76,176 @@
 // document.addEventListener('DOMContentLoaded', () => {
 //     updateCalendar();
 
-    
 // });
 
-async function fetchAppointments() {
-    try {
-        const response = await fetch(`${API_BASE_URL}/getAllAppointments`);
-        if (!response.ok) throw new Error("Failed to fetch appointments.");
+// async function fetchAppointments() {
+//     try {
+//         const response = await fetch(`${API_BASE_URL}/getAllAppointments`);
+//         if (!response.ok) throw new Error("Failed to fetch appointments.");
 
-        const appointments = await response.json();
-        
-        // طباعة البيانات المسترجعة للتحقق من تنسيقها
-        // console.log("Appointments:", appointments);
+//         const appointments = await response.json();
 
-        // التحقق من أن المواعيد تحتوي على تاريخ ووقت صحيحين
-        const validAppointments = appointments.filter(appointment => {
-            return appointment.date && appointment.time;
-        });
+//         // طباعة البيانات المسترجعة للتحقق من تنسيقها
+//         // console.log("Appointments:", appointments);
 
-        return validAppointments;
-    } catch (error) {
-        console.error("Error fetching appointments:", error);
-        return [];
-    }
-}
+//         // التحقق من أن المواعيد تحتوي على تاريخ ووقت صحيحين
+//         const validAppointments = appointments.filter(appointment => {
+//             return appointment.date && appointment.time;
+//         });
 
-async function updateCalendar() {
-    const today = new Date();
-    const appointmentDateInput = document.querySelector('#appointmentDate');
-    const appointmentTimeInput = document.querySelector('#appointmentTime');
+//         return validAppointments;
+//     } catch (error) {
+//         console.error("Error fetching appointments:", error);
+//         return [];
+//     }
+// }
 
-    // Fetch all appointments from the server
-    const appointments = await fetchAppointments();
+// async function updateCalendar() {
+//     const today = new Date();
+//     const appointmentDateInput = document.querySelector('#appointmentDate');
+//     const appointmentTimeInput = document.querySelector('#appointmentTime');
 
-    // Disable previous days
-    appointmentDateInput.addEventListener('change', () => {
-        const selectedDate = new Date(appointmentDateInput.value);
-        const availableTimes = [];
+//     // Fetch all appointments from the server
+//     const appointments = await fetchAppointments();
 
-        // Filter appointments based on the selected date
-        appointments.forEach(appointment => {
-            const appointmentDate = new Date(`${appointment.date}T${appointment.time}`);
-            // Ensure the appointment matches the selected day and is not booked
-            if (appointment.date === appointmentDateInput.value && appointment.status !== 'booked') {
-                availableTimes.push(appointment.time);
-            }
-        });
+//     // Disable previous days
+//     appointmentDateInput.addEventListener('change', () => {
+//         const selectedDate = new Date(appointmentDateInput.value);
+//         const availableTimes = [];
 
-       // Update time options
-        appointmentTimeInput.innerHTML = '';// Clear previous options
-        if (availableTimes.length > 0) {
-            availableTimes.forEach(time => {
-                const option = document.createElement('option');
-                option.value = time;
-                option.textContent = time;
-                appointmentTimeInput.appendChild(option);
-            });
-            appointmentTimeInput.disabled = false;
-        } else {
-            const option = document.createElement('option');
-            option.textContent = 'No available times';
-            appointmentTimeInput.appendChild(option);
-            appointmentTimeInput.disabled = true;
-        }
-    });
+//         // Filter appointments based on the selected date
+//         appointments.forEach(appointment => {
+//             const appointmentDate = new Date(`${appointment.date}T${appointment.time}`);
+//             // Ensure the appointment matches the selected day and is not booked
+//             if (appointment.date === appointmentDateInput.value && appointment.status !== 'booked') {
+//                 availableTimes.push(appointment.time);
+//             }
+//         });
 
-    // Disable dates that have no available appointments or are before today
-    const minDate = today.toISOString().split('T')[0]; // Minimum date
-    appointmentDateInput.min = minDate;
+//        // Update time options
+//         appointmentTimeInput.innerHTML = '';// Clear previous options
+//         if (availableTimes.length > 0) {
+//             availableTimes.forEach(time => {
+//                 const option = document.createElement('option');
+//                 option.value = time;
+//                 option.textContent = time;
+//                 appointmentTimeInput.appendChild(option);
+//             });
+//             appointmentTimeInput.disabled = false;
+//         } else {
+//             const option = document.createElement('option');
+//             option.textContent = 'No available times';
+//             appointmentTimeInput.appendChild(option);
+//             appointmentTimeInput.disabled = true;
+//         }
+//     });
 
-    const disabledDates = appointments
-        .filter(appointment => appointment.status === 'booked' || new Date(appointment.date) < today)
-        .map(appointment => appointment.date);
+//     // Disable dates that have no available appointments or are before today
+//     const minDate = today.toISOString().split('T')[0]; // Minimum date
+//     appointmentDateInput.min = minDate;
 
-    appointmentDateInput.addEventListener('input', () => {
-        const selectedDate = appointmentDateInput.value;
-        if (disabledDates.includes(selectedDate)) {
-            appointmentDateInput.setCustomValidity('هذا التاريخ غير متاح.');
-        } else {
-            appointmentDateInput.setCustomValidity('');
-        }
-    });
-}
+//     const disabledDates = appointments
+//         .filter(appointment => appointment.status === 'booked' || new Date(appointment.date) < today)
+//         .map(appointment => appointment.date);
 
-// Call updateCalendar when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    updateCalendar();
-});
+//     appointmentDateInput.addEventListener('input', () => {
+//         const selectedDate = appointmentDateInput.value;
+//         if (disabledDates.includes(selectedDate)) {
+//             appointmentDateInput.setCustomValidity('هذا التاريخ غير متاح.');
+//         } else {
+//             appointmentDateInput.setCustomValidity('');
+//         }
+//     });
+// }
 
 // Call updateCalendar when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    updateCalendar();
-});
+// document.addEventListener("DOMContentLoaded", () => {
+//   updateCalendar();
+// });
 
+// Call updateCalendar when the page loads
+// document.addEventListener("DOMContentLoaded", () => {
+//   updateCalendar();
+// });
 
-function showModal(title, message, type = 'success') {
-    const modalTitle = document.getElementById('modalTitle');
-    const modalMessage = document.getElementById('modalMessage');
-    const modalIcon = document.getElementById('modalIcon');
+function showModal(title, message, type = "success") {
+  const modalTitle = document.getElementById("modalTitle");
+  const modalMessage = document.getElementById("modalMessage");
+  const modalIcon = document.getElementById("modalIcon");
 
-    modalTitle.textContent = title;
-    modalMessage.textContent = message;
+  modalTitle.textContent = title;
+  modalMessage.textContent = message;
 
-    // أيقونة حسب نوع الرسالة
-    if (type === 'success') {
-        modalIcon.innerHTML = '✅'; // أيقونة صح
-        modalIcon.style.color = 'green';
-    } else {
-        modalIcon.innerHTML = '❌'; // أيقونة خطأ
-        modalIcon.style.color = 'red';
-    }
+  // أيقونة حسب نوع الرسالة
+  if (type === "success") {
+    modalIcon.innerHTML = "✅"; // أيقونة صح
+    modalIcon.style.color = "green";
+  } else {
+    modalIcon.innerHTML = "❌"; // أيقونة خطأ
+    modalIcon.style.color = "red";
+  }
 
-    // اظهار المودال
-    const modalEl = document.getElementById('bookingModal');
-    const modal = new bootstrap.Modal(modalEl);
-    modal.show();
+  // اظهار المودال
+  const modalEl = document.getElementById("bookingModal");
+  const modal = new bootstrap.Modal(modalEl);
+  modal.show();
 }
-
 
 // Send appointment booking request
 async function bookAppointment(formData) {
-    try {
-        const response = await fetch(`${API_BASE_URL}/bookAppointment`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData),
-        });
+  try {
+    const response = await fetch(`${API_BASE_URL}/bookAppointment`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
 
-        const result = await response.json();
+    const result = await response.json();
 
-        if (response.ok) {
-            showModal(
-                'Success!',
-                `The appointment has been successfully booked!`,
-                'success'
-            );
+    if (response.ok) {
+      showModal(
+        "Success!",
+        `The appointment has been successfully booked!`,
+        "success",
+      );
 
-            //  showModal(
-            //     'Success!',
-            //     `The appointment has been successfully booked! Appointment ID: ${result.appointmentId}`,
-            //     'success'
-            // );
-        } else {
-            showModal('Error', `Error: ${result.error}`, 'error');
-        }
-    } catch (error) {
-        console.error('Error booking appointment:', error);
-        showModal('Error', 'An error occurred while connecting to the server.', 'error');
+      //  showModal(
+      //     'Success!',
+      //     `The appointment has been successfully booked! Appointment ID: ${result.appointmentId}`,
+      //     'success'
+      // );
+    } else {
+      showModal("Error", `Error: ${result.error}`, "error");
     }
+  } catch (error) {
+    console.error("Error booking appointment:", error);
+    showModal(
+      "Error",
+      "An error occurred while connecting to the server.",
+      "error",
+    );
+  }
 }
 
-
 // Handle form submission
-document.querySelector('#appointmentForm').addEventListener('submit', function (event) {
-    event.preventDefault();
+// document
+//   .querySelector("#appointmentForm")
+//   .addEventListener("submit", function (event) {
+//     event.preventDefault();
 
-    const formData = {
-        patient_name: document.querySelector('#patientName').value,
-        phone_number: document.querySelector('#phoneNumber').value,
-        email: document.querySelector('#email').value,
-        appointment_date: document.querySelector('#appointmentDate').value,
-        appointment_time: document.querySelector('#appointmentTime').value,
-        appointment_reason: document.querySelector('#appointmentReason').value,
-        agree_to_terms: document.querySelector('#agreeToTerms').checked,
-        // appointment_id: 'ioqd638bJmJv0UGXcGY0'
-    };
+//     const formData = {
+//       patient_name: document.querySelector("#patientName").value,
+//       phone_number: document.querySelector("#phoneNumber").value,
+//       email: document.querySelector("#email").value,
+//       appointment_date: document.querySelector("#appointmentDate").value,
+//       appointment_time: document.querySelector("#appointmentTime").value,
+//       appointment_reason: document.querySelector("#appointmentReason").value,
+//       agree_to_terms: document.querySelector("#agreeToTerms").checked,
+//       // appointment_id: 'ioqd638bJmJv0UGXcGY0'
+//     };
 
-    bookAppointment(formData);
-});
-
+//     bookAppointment(formData);
+//   });
 
 // // Handle consultation request submission
 // async function submitConsultationForm(formData) {
@@ -256,7 +257,7 @@ document.querySelector('#appointmentForm').addEventListener('submit', function (
 //         headers: { 'Content-Type': 'application/json' },
 //         body: JSON.stringify(formData),
 //       });
-  
+
 //       const result = await response.json();
 //       if (response.ok) {
 //         alert(`The consultation request has been successfully submitted! User ID: ${result.userId}`);
@@ -267,17 +268,17 @@ document.querySelector('#appointmentForm').addEventListener('submit', function (
 //     } catch (error) {
 //         console.error('Error while sending the consultation request:', error);
 //         alert('An error occurred while connecting to the server.');
-        
+
 //     }
 //   }
-  
+
 //   // Handle consultation form submission
 //   document.querySelector('#consultationForm').addEventListener('submit', function (event) {
 
 //     alert("###Form Data:"); // Log the form data for debugging
 
 //     event.preventDefault();
-  
+
 //     // جمع بيانات الفورم
 //     const formData = {
 //       fullName: document.querySelector('#consultationfullName').value,
@@ -287,8 +288,7 @@ document.querySelector('#appointmentForm').addEventListener('submit', function (
 //       consultationType: document.querySelector('#consultationconsultationType').value,
 //       additionalInfo: document.querySelector('#consultationadditionalInfo').value,
 //     };
-  
+
 //     // إرسال البيانات إلى السيرفر
 //     submitConsultationForm(formData);
 //   });
-
