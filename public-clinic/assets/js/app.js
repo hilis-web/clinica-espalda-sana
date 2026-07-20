@@ -263,7 +263,7 @@ window.loadCategories = function (sectionId) {
 
               <div class="mt-2 category-footer">
 
-                <a href="subcategory.html?sectionId=${sectionId}&categoryId=${categoryId}">
+                <a data-i18n="more_info" href="subcategory.html?sectionId=${sectionId}&categoryId=${categoryId}" >
                   More info
                   <i class="bi bi-arrow-right"></i>
                 </a>
